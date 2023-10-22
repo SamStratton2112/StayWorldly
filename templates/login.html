@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block content %}
+<div>
+    <h2>Welcome back to Stay Worldly</h2>
+    <form method="POST" id="user_form">
+      {{ form.hidden_tag() }}
+
+      {% for field in form if field.widget.input_type != 'hidden' %}
+        {% for error in field.errors %}
+          <span>{{ error }}</span>
+        {% endfor %}
+        {{field.label}}
+        {{field(placeholder=field.label.text)}}
+      {% endfor %}
+
+      <button>Login</button>
+    </form>
+  </div>
+{% endblock %}
