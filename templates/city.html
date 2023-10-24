@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>{{city_name}}<h1>
+    <p>{{summary}}</p>
+    <ul>
+        <label>Scores out of 10:</label>
+        {% for cat in city_cats %}
+        <li>{{cat['name']}} : {{cat['score_out_of_10']}}</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

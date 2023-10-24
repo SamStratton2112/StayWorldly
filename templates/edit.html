@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block content %}
+<div>
+    {% for msg in get_flashed_messages() %}
+    <div class="alert">{{msg}}</div>
+    {% endfor %}
+    <form method="POST" id="user_form">
+        {{ form.hidden_tag() }}
+  
+        {% for field in form if field.widget.input_type != 'hidden' %}
+          {% for error in field.errors %}
+            <span>{{ error }}</span>
+          {% endfor %}
+          {{field.label}}
+          {{field(placeholder=field.label.text)}}
+        {% endfor %}
+  
+        <button>Save</button>
+      </form>
+      <button><a href="/user/{{user.id}}">Cancel</a></button>
+</div>
+{% endblock %}

@@ -1,4 +1,27 @@
 {% extends 'base.html' %}
 {% block content %}
-<h1>Welcome to Stay Worldly</h1>
+<h1>Welcome and remember to Stay Worldly!<h1>
+
+<div>
+    <form method="POST">
+        <label>Find your next adventure: </label>
+        {{ form.hidden_tag() }}
+
+        {% for field in form if field.widget.input_type != 'hidden' %}
+        {% for error in field.errors %}
+          <span>{{ error }}</span>
+        {% endfor %}
+        {{field(placeholder=field.label.text)}}
+        {% endfor %}
+        <button>Submit</button>
+    </form>
+</div>
+<div>
+    <ul>
+        <label>Cities:</label>
+        {% for city in cities %}
+        <li><a href="/city/{{city[0]}}">{{city[0]}}</a></li>
+        {% endfor %}
+    </ul>
+</div>
 {% endblock %}

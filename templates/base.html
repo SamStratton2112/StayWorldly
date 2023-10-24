@@ -7,6 +7,9 @@
     <title>Stay Worldly</title>
 </head>
 <body>
+    {% for msg in get_flashed_messages() %}
+    <div class="alert">{{msg}}</div>
+    {% endfor %}
     <nav>
         <div class="container">
             <div class="navbar-header">
@@ -15,11 +18,11 @@
                 </a>
             </div>
             <ul class="navbar-buttons">
-                {% if not g.user %}
+                {% if 'username' not in session %}
                 <li><a href="/register">Register</a></li>
                 <li><a href="/login">Log in</a></li>
                 {% else %} 
-                <li><a href="/user/{{g.user.id}}">{{g.user.username}}</a></li>
+                <li><a href="/user/{{session.get('username')}}">{{session.get('username')}}</a></li>
                 <li><a href="/logout">Log out</a></li>
                 {% endif %}
             </ul>

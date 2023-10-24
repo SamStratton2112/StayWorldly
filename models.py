@@ -18,10 +18,12 @@ class User(db.Model):
     
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     username = db.Column(db.String(20), nullable=False, unique=True)
+    password = db.Column(db.Text, nullable = False)
     first_name = db.Column(db.Text, nullable=False)
     last_name = db.Column(db.Text, nullable=False)
-    password = db.Column(db.Text, nullable = False)
     employer_timezone = db.Column(db.Text, nullable=True)
+
+    comment = db.relationship('Comment', backref='commentuser')
 
     @classmethod
     def register(cls, username, first_name, last_name, password, employer_timezone):
@@ -59,6 +61,9 @@ class City(db.Model):
     latitude = db.Column(db.Float, nullable=False)
     summary = db.Column(db.Text, nullable=False)
 
+    country = db.relationship('Country', backref="countrycity")
+    timezone = db.relationship('Timezone', backref='timezonecity')
+
 class Country(db.Model):
     """Country model"""
     __tablename__ = 'countries'
@@ -66,12 +71,14 @@ class Country(db.Model):
         return f'<Country: {self.id}, name: {self.country_name}>'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    country_name = db.Column(db.Text, nullable=False)
+    country_name = db.Column(db.Text, db.ForeignKey('cities.country_name'), nullable=False)
     continent = db.Column(db.Text, nullable=False)
     currency = db.Column(db.Text, nullable=False)
     languages = db.Column(db.Text, nullable=False)
     drving_side = db.Column(db.Text, nullable=False)
     flag = db.Column(db.Text, nullable=False, default='https://njq-ip.com/wp-content/uploads/2015/12/Benelux-No-Flag-Available.png')
+    
+    country_timezone = db.relationship('Timezone', backref="timezonecountry")
 
 class Timezone(db.Model):
     """Timezone model"""
@@ -96,6 +103,9 @@ class User_city(db.Model):
     priority = db.Column(db.Integer, nullable=False, default=0)
     timezone_difference = db.Column(db.Integer, nullable=True)
 
+    city = db.relationship('City', backref='cityusers')
+
+
 class Comment(db.Model):
     """Comment model"""
     __tablename__ = 'comments'
@@ -106,6 +116,8 @@ class Comment(db.Model):
     city_id = db.Column(db.Integer, db.ForeignKey('cities.id'))
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     comment = db.Column(db.String(100), nullable=False)
+
+    city_comment = db.relationship('City', backref="commentcity")
 
 
 

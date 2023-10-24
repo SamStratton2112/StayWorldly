@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block content %}
+<button><a href="/user/{{user.id}}/edit">Edit User</a></button>
+<h1>Stay Worldly {{user.username}}</h1>
+<div>
+    <h2>User Information</h2>
+    <ul>
+        <li> First Name: {{user.first_name}}</li>
+        <li> Last Name: {{user.last_name}}</li>
+        <li> Employer Timezone: UTC{{user.employer_timezone}}</li>
+    </ul>
+</div>
+<div>
+    <h3>User Cities</h3>
+    <ul>
+        {% for city in user_cities %}
+        <li>{{city}}</li>
+        {% endfor %}
+    </ul>
+</div>
+
+{% endblock %}
