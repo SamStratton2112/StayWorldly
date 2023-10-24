@@ -112,7 +112,7 @@ def edit_user(user_id):
             return redirect('/')
     return render_template('edit.html', form=form, user=user)
 
-@app.route('/city/<city>')
+@app.route('/city/<city>', methods=["GET", "POST"])
 def show_city(city):
     res = requests.get('https://api.teleport.org/api/cities/', params={'search': city, 'limit':1})
     city_data = res.json()
