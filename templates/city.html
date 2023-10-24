@@ -21,22 +21,33 @@
             {% for cat in city_cats %}
             <li>{{cat['name']}} : {{cat['score_out_of_10']}}</li>
             {% endfor %}
+            <li>Driving side: {{driving}}</li>
+            <li>Currency: {{currency}}</li>
         </ul>
 </div>
+<div id="Language data">
+    <h2>Language(s)</h2>
+    <ul>
+        {% for language in languages %}
+        <li>{{language}}</li>
+        {% endfor %}
+    </ul>
+</div>
 <div id="weather data">
-    <h2>Weather</h2>
+    <h3>Weather</h3>
     <ul>
         <li>Current Tempurature: {{temp}} degrees Fahrenheit</li>
         <li>Current Conditions: {{description}}</li>
     </ul>
 </div>
 <div id="timezone data">
-    <h3>Timezone data</h3>
+    <h4>Timezone data</h4>
     <ul>
         <li>Timezone: {{timezone}}</li>
         <li>Time Difference From Employer Timezone: {{time_dif}} hours</li>
     </ul>
 </div>
+
 
 
 {% endblock %}

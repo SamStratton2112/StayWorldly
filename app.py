@@ -157,4 +157,16 @@ def show_city(city):
     else:
         time_difference=time_dif
 
-    return render_template('city.html', time_dif=time_difference, timezone=timezone, city_image=city_image, city_cats=city_cats, summary=summary, city_name=city_name, form=form, temp=temp, description=description)
+    #Get Country info
+
+    country = city_information['_links']['city:country']['name']
+    country_link = requests.get(f'https://countryinfoapi.com/api/countries/name/{country}')
+    country_data = country_link.json()
+    language = country_data['languages']
+    languages = language.values()
+    driving = country_data['car']['side']
+    currencies = country_data['currencies']
+    currency = str(currencies.keys())
+    curr = currency.replace("dict_keys(['", "").replace("'])", "")
+    print(curr)
+    return render_template('city.html', currency=curr, driving=driving, languages=languages, time_dif=time_difference, timezone=timezone, city_image=city_image, city_cats=city_cats, summary=summary, city_name=city_name, form=form, temp=temp, description=description)
