@@ -1,11 +1,42 @@
 {% extends 'base.html' %}
 {% block content %}
-<h1>{{city_name}}<h1>
-    <p>{{summary}}</p>
+<form method="POST">
+    {{ form.hidden_tag() }}
+
+    {% for field in form if field.widget.input_type != 'hidden' %}
+    {% for error in field.errors %}
+      <span>{{ error }}</span>
+    {% endfor %}
+    {{field(placeholder=field.label.text)}}
+    {% endfor %}
+</form>
+<div id="city data">
+    <h1>{{city_name}}</h1>
+        <div>
+            <img src="{{city_image}}">
+        </div>
+        <p>{{summary}}</p>
+        <ul>
+            <label>Scores out of 10:</label>
+            {% for cat in city_cats %}
+            <li>{{cat['name']}} : {{cat['score_out_of_10']}}</li>
+            {% endfor %}
+        </ul>
+</div>
+<div id="weather data">
+    <h2>Weather</h2>
     <ul>
-        <label>Scores out of 10:</label>
-        {% for cat in city_cats %}
-        <li>{{cat['name']}} : {{cat['score_out_of_10']}}</li>
-        {% endfor %}
+        <li>Current Tempurature: {{temp}} degrees Fahrenheit</li>
+        <li>Current Conditions: {{description}}</li>
     </ul>
+</div>
+<div id="timezone data">
+    <h3>Timezone data</h3>
+    <ul>
+        <li>Timezone: {{timezone}}</li>
+        <li>Time Difference From Employer Timezone: {{time_dif}} hours</li>
+    </ul>
+</div>
+
+
 {% endblock %}

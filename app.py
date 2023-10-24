@@ -1,8 +1,10 @@
 from flask import Flask, request, jsonify, render_template, redirect, session, g, flash
 from models import db, connect_db, User, City, Country, Timezone, User_city, Comment
-from forms import LoginForm, RegisterUserForm, CommentForm, EditUserForm, SearchForm
+from forms import SaveCityForm, LoginForm, RegisterUserForm, CommentForm, EditUserForm, SearchForm
 from sqlalchemy.exc import IntegrityError
 import requests
+import datetime
+# from requestfuncs import get_city_info
 
 
 
@@ -31,7 +33,7 @@ def homepage():
         - form to search for cities"""
     form = SearchForm()
     if form.validate_on_submit():
-        city = request.form['city']
+        city = request.form['city'].capitalize()
         res = requests.get('https://api.teleport.org/api/cities/', params={'search': city, 'limit':10})
         city_data = res.json()
         # city_link = city_data['_embedded']['city:search-results'][0]['_links']['city:item']['href']
@@ -112,19 +114,47 @@ def edit_user(user_id):
             return redirect('/')
     return render_template('edit.html', form=form, user=user)
 
-@app.route('/city/<city>', methods=["GET", "POST"])
+@app.route('/city/<city>')
 def show_city(city):
+    """Get all relevant information about a city"""
+    # Get City data from Teleport API
     res = requests.get('https://api.teleport.org/api/cities/', params={'search': city, 'limit':1})
     city_data = res.json()
     city_link = city_data['_embedded']['city:search-results'][0]['_links']['city:item']['href'] 
     city_name = city_data['_embedded']['city:search-results'][0]['matching_full_name']
-    city_info =  requests.get(city_link)
-    res =  requests.get('https://api.teleport.org/api/cities/geonameid:5391811/')
-    city_information = res.json()
-    city_res = requests.get(city_information['_links']['city:urban_area']['href'])
-    city = city_res.json()
+    city_scores_link =  requests.get(city_link)
+    city_information = city_scores_link.json()
+    city_urban_area = requests.get(city_information['_links']['city:urban_area']['href'])
+    city = city_urban_area.json()
     city_scores = requests.get(city['_links']['ua:scores']['href'])
+    city_images = requests.get(city['_links']['ua:images']['href'])
+    city_img = city_images.json()
+    city_image = city_img['photos'][0]['image']['web']
     city_final = city_scores.json()
     city_cats = city_final['categories']
-    summary = city_final['summary']
-    return render_template('city.html', city_cats=city_cats, summary=summary, city_name=city_name)
+    summ = city_final['summary']
+    summ1 = summ.replace('<p>', '')
+    summ2 = summ1.replace('<b>', '')
+    summ3 = summ2.replace('</b>', '')
+    summ4 = summ3.replace('</p>', '')
+    summary = summ4.replace('Teleport', '')
+    form = SaveCityForm()
+
+    # Get timezone and weather data
+    city_lat = city_information['location']['latlon']['latitude']
+    city_lon = city_information['location']['latlon']['longitude']
+    data = requests.get(f'https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/{city_lat},{city_lon}?key=9Z9PX7J5C7ZRC76D38PL4WFL8')
+    json_data = data.json()
+    timezone = json_data['timezone']
+    tzoffset = json_data['tzoffset']
+    description = json_data['days'][0]['description']
+    temp = json_data['days'][0]['temp']
+    user = User.query.filter_by(username = session['username']).first()
+    user_tz = user.employer_timezone.replace(':', '').replace('00', '')
+    time_dif = int(user_tz) - int(tzoffset)
+    if time_dif< 0:
+        time_difference = time_dif * -1
+    else:
+        time_difference=time_dif
+
+    return render_template('city.html', time_dif=time_difference, timezone=timezone, city_image=city_image, city_cats=city_cats, summary=summary, city_name=city_name, form=form, temp=temp, description=description)
