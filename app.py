@@ -32,6 +32,13 @@ def homepage():
         - Navbar shows option to see user page/information
         - list of cities to check out
         - form to search for cities"""
+    
+    all_cities = User_city.query.all()
+    user_cities = []
+    for city in all_cities:
+        if city.city_name not in user_cities:
+            user_cities.insert(0,city.city_name)
+    all_user_cities = user_cities[:10:]
     form = SearchForm()
     if form.validate_on_submit():
         city = request.form['city'].capitalize()
@@ -40,8 +47,8 @@ def homepage():
         city_results = []
         for city in city_data['_embedded']['city:search-results']:
             city_results.append((city['matching_full_name'], city['_links']['city:item']['href']))
-        return render_template('home.html', form=form, cities=city_results)
-    return render_template('home.html', form=form)
+        return render_template('home.html', form=form, cities=city_results, all_user_cities=all_user_cities)
+    return render_template('home.html', form=form, all_user_cities=all_user_cities)
 
 @app.route('/register', methods=["GET", "POST"])
 def register_user():
@@ -91,8 +98,8 @@ def show_user(username):
     if 'username' not in session:
         flash("Access Denied")
         return redirect('/')
-    user = User.query.filter_by(username=username).first()
-    user_cities = User_city.query.filter(User.id == user.id).all()
+    user = User.query.filter_by(username = session['username']).first()
+    user_cities = User_city.query.filter_by(user_id = user.id).all()
     return render_template('user.html', user=user, user_cities=user_cities)
 
 @app.route('/user/<int:user_id>/edit', methods=["GET", "POST"])
@@ -153,11 +160,14 @@ def show_city(city):
     temp = json_data['days'][0]['temp']
     user = User.query.filter_by(username = session['username']).first()
     user_tz = user.employer_timezone.replace(':', '').replace('00', '')
-    time_dif = int(user_tz) - int(tzoffset)
-    # if time_dif< 0:
-    #     time_difference = time_dif * -1
-    # else:
-    #     time_difference=time_dif
+    daylight_saving = [11,12,1,2,3]
+    current_month = datetime.datetime.now().month
+    print(current_month)
+    print('*****************')
+    if current_month in daylight_saving:
+        time_dif = (int(user_tz) - int(tzoffset))
+    else:
+        time_dif = int(user_tz) - int(tzoffset)+1
 
     #Get Country info
 
@@ -166,7 +176,6 @@ def show_city(city):
     country_data = country_link.json()
     language = country_data['languages']
     languages = language.values()
-    print(languages)
     driving = country_data['car']['side']
     currencies = country_data['currencies']
     currency = str(currencies.keys())
@@ -175,6 +184,7 @@ def show_city(city):
 
 @app.route('/save/<city_short_name>', methods=["GET", "POST"])
 def save_city(city_short_name):
+    """Save a city to user's page while avoiding duplication"""
     user = User.query.filter_by(username = session['username']).first()
     user_cities = User_city.query.filter_by(user_id = user.id).all()
     for city in user_cities:
@@ -189,17 +199,9 @@ def save_city(city_short_name):
 
 @app.route('/remove/<city_id>', methods=["GET", "POST"])
 def remove_u_city(city_id):
+    """Remove a city from a user's page"""
     city = User_city.query.filter_by(id=city_id).first()
     user = session['username']
     db.session.delete(city)
     db.session.commit()
     return redirect(f'/user/{user}')
-
-    #  for city in user.cities:
-    #         if city_short_name == city:
-    #             flash('You have already saved this city')
-    #             return redirect('/')
-    #         add_city = User_city(city_name=city_short_name, user_id =user.id)
-    #         db.session.add(add_city)
-    #         db.session.commit()
-    #         return redirect(f'/user/{user.username}')

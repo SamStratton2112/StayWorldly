@@ -39,7 +39,11 @@
     <h4>Timezone data</h4>
     <ul>
         <li>Timezone: {{timezone}}</li>
-        <li>Time Difference From Employer Timezone: {{time_dif}} hours</li>
+        {% if time_dif < 0 %}
+        <li>{{city_short_name}} is {{time_dif * -1}} hours ahead of your employer timezone.</li>
+        {% else %}
+        <li>{{city_short_name}} is {{time_dif}} hours behind your employer timezone</li>
+        {% endif %}
     </ul>
 </div>
 
