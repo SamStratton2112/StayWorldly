@@ -2,9 +2,6 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, TextAreaField, SelectField, SubmitField
 from wtforms.validators import DataRequired, Length
 
-class SaveCityForm(FlaskForm):
-    save_city = SubmitField('Save City')
-
 class SearchForm(FlaskForm):
     """search city form"""
     city = StringField('City', validators=[DataRequired()])

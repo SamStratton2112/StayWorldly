@@ -11,10 +11,13 @@
     </ul>
 </div>
 <div>
-    <h3>User Cities</h3>
+    <h3>Your Cities:</h3>
     <ul>
         {% for city in user_cities %}
-        <li>{{city}}</li>
+        <li><a href="/city/{{city}}">{{city}}</a></li>
+        <form action="/remove/{{city.id}}" method="POST">
+            <button class="delete_u_city">Remove</button>
+        </form>
         {% endfor %}
     </ul>
 </div>

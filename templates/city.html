@@ -1,14 +1,8 @@
 {% extends 'base.html' %}
 {% block content %}
-<form method="POST">
-    {{ form.hidden_tag() }}
 
-    {% for field in form if field.widget.input_type != 'hidden' %}
-    {% for error in field.errors %}
-      <span>{{ error }}</span>
-    {% endfor %}
-    {{field(placeholder=field.label.text)}}
-    {% endfor %}
+<form method="POST">
+    <button><a href="/save/{{city_short_name}}">Save City</a></button>
 </form>
 <div id="city data">
     <h1>{{city_name}}</h1>
@@ -23,6 +17,7 @@
             {% endfor %}
             <li>Driving side: {{driving}}</li>
             <li>Currency: {{currency}}</li>
+            <li>Population: {{population}}</li>
         </ul>
 </div>
 <div id="Language data">
