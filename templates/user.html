@@ -14,7 +14,7 @@
     <h3>Your Cities:</h3>
     <ul>
         {% for city in user_cities %}
-        <li><a href="/city/{{city}}">{{city}}</a></li>
+        <li><a href="/city/{{city}}">{{city}}<img id="homePgCityImg" src="{{city.city_image}}"></a></li>
         <form action="/remove/{{city.id}}" method="POST">
             <button class="delete_u_city">Remove</button>
         </form>

@@ -11,7 +11,7 @@
             {% endfor %}
         {% else %}
             {% for city in all_user_cities %}
-            <li><a href="/city/{{city}}">{{city}}</a></li>
+            <li><a href="/city/{{city}}">{{city}}<img id="homePgCityImg" src="{{city.city_image}}"></a></li>
         {% endfor %}
         {% endif %}
     </ul>

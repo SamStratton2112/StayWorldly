@@ -37,7 +37,7 @@ def homepage():
     user_cities = []
     for city in all_cities:
         if city.city_name not in user_cities:
-            user_cities.insert(0,city.city_name)
+            user_cities.insert(0,city)
     all_user_cities = user_cities[:10:]
     form = SearchForm()
     if form.validate_on_submit():
@@ -178,8 +178,9 @@ def show_city(city):
     languages = language.values()
     driving = country_data['car']['side']
     currencies = country_data['currencies']
-    currency = str(currencies.keys())
-    curr = currency.replace("dict_keys(['", "").replace("'])", "")
+    currency = str(currencies.keys()).replace("dict_keys(['", "").replace("'])", "")
+    final_currency = currencies[currency]['name']
+    curr = final_currency
     return render_template('city.html', city_short_name=city_short_name, population=population, user=user, currency=curr, driving=driving, languages=languages, time_dif=time_dif, timezone=timezone, city_image=city_image, city_cats=city_cats, summary=summary, city_name=city_name, temp=temp, description=description)
 
 @app.route('/save/<city_short_name>', methods=["GET", "POST"])
@@ -187,11 +188,22 @@ def save_city(city_short_name):
     """Save a city to user's page while avoiding duplication"""
     user = User.query.filter_by(username = session['username']).first()
     user_cities = User_city.query.filter_by(user_id = user.id).all()
+    
+    res = requests.get('https://api.teleport.org/api/cities/', params={'search': city_short_name, 'limit':1})
+    city_data = res.json()
+    city_link = city_data['_embedded']['city:search-results'][0]['_links']['city:item']['href'] 
+    city_scores_link =  requests.get(city_link)
+    city_information = city_scores_link.json()
+    city_urban_area = requests.get(city_information['_links']['city:urban_area']['href'])
+    city = city_urban_area.json()
+    city_images = requests.get(city['_links']['ua:images']['href'])
+    city_img = city_images.json()
+    city_image = city_img['photos'][0]['image']['web']
     for city in user_cities:
         if city.city_name == city_short_name:
             flash("You've already saved this city!")
             return redirect(f'/user/{user.username}')
-    add_city = User_city(city_name=city_short_name, user_id =user.id)
+    add_city = User_city(city_name=city_short_name, city_image=city_image, user_id =user.id)
     db.session.add(add_city)
     db.session.commit()
     return redirect(f'/user/{user.username}')

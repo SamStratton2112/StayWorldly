@@ -49,6 +49,7 @@ class User_city(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     city_name = db.Column(db.Text, nullable=False)
+    city_image = db.Column(db.Text, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
 
