@@ -181,7 +181,7 @@ def save_city(city_short_name):
         if city.city_name == city_short_name:
             flash("You've already saved this city!")
             return redirect(f'/user/{user.username}')
-    add_city = User_city(city_name=city, user_id =user.id)
+    add_city = User_city(city_name=city_short_name, user_id =user.id)
     db.session.add(add_city)
     db.session.commit()
     return redirect(f'/user/{user.username}')
