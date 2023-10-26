@@ -47,6 +47,7 @@ def homepage():
         city_results = []
         for city in city_data['_embedded']['city:search-results']:
             city_results.append((city['matching_full_name'], city['_links']['city:item']['href']))
+            print(city_results)
         return render_template('home.html', form=form, cities=city_results, all_user_cities=all_user_cities)
     return render_template('home.html', form=form, all_user_cities=all_user_cities)
 
@@ -100,7 +101,14 @@ def show_user(username):
         return redirect('/')
     user = User.query.filter_by(username = session['username']).first()
     user_cities = User_city.query.filter_by(user_id = user.id).all()
-    return render_template('user.html', user=user, user_cities=user_cities)
+    visited = []
+    to_visit = []
+    for city in user_cities:
+        if city.visited == 0:
+            to_visit.append(city)
+        else:
+            visited.append(city)
+    return render_template('user.html', user=user, visited=visited, to_visit=to_visit)
 
 @app.route('/user/<int:user_id>/edit', methods=["GET", "POST"])
 def edit_user(user_id):
@@ -114,7 +122,7 @@ def edit_user(user_id):
         user.first_name = form.first_name.data
         user.last_name = form.last_name.data
         user.employer_timezone = form.employer_timezone.data
-        if User.authenticate(form.username.data, form.password.data):
+        if User.authenticate(session['username'], form.password.data):
             db.session.commit()
             return redirect(f'/user/{user.username}')
         else: 
@@ -126,62 +134,60 @@ def edit_user(user_id):
 def show_city(city):
     """Get all relevant information about a city"""
     # Get City data from Teleport API
-    res = requests.get('https://api.teleport.org/api/cities/', params={'search': city, 'limit':1})
-    city_data = res.json()
-    city_link = city_data['_embedded']['city:search-results'][0]['_links']['city:item']['href'] 
-    city_name = city_data['_embedded']['city:search-results'][0]['matching_full_name']
-    city_scores_link =  requests.get(city_link)
-    city_information = city_scores_link.json()
-    city_urban_area = requests.get(city_information['_links']['city:urban_area']['href'])
-    city_short_name = city_information['name']
-    population = city_information['population']
-    city = city_urban_area.json()
-    city_scores = requests.get(city['_links']['ua:scores']['href'])
-    city_images = requests.get(city['_links']['ua:images']['href'])
-    city_img = city_images.json()
-    city_image = city_img['photos'][0]['image']['web']
-    city_final = city_scores.json()
-    city_cats = city_final['categories']
-    summ = city_final['summary']
-    summ1 = summ.replace('<p>', '')
-    summ2 = summ1.replace('<b>', '')
-    summ3 = summ2.replace('</b>', '')
-    summ4 = summ3.replace('</p>', '')
-    summary = summ4.replace('Teleport', '')
+    try: 
+        res = requests.get('https://api.teleport.org/api/cities/', params={'search': city, 'limit':1})
+        city_data = res.json()
+        city_link = city_data['_embedded']['city:search-results'][0]['_links']['city:item']['href'] 
+        city_name = city_data['_embedded']['city:search-results'][0]['matching_full_name']
+        city_scores_link =  requests.get(city_link)
+        city_information = city_scores_link.json()
+        city_urban_area = requests.get(city_information['_links']['city:urban_area']['href'])
+        city_short_name = city_information['name']
+        population = city_information['population']
+        city = city_urban_area.json()
+        city_scores = requests.get(city['_links']['ua:scores']['href'])
+        city_images = requests.get(city['_links']['ua:images']['href'])
+        city_img = city_images.json()
+        city_image = city_img['photos'][0]['image']['web']
+        city_final = city_scores.json()
+        city_cats = city_final['categories']
+        summ = city_final['summary']
+        summary = summ.replace('<p>', '').replace('<b>', '').replace('</b>', '').replace('</p>', '').replace('Teleport', '').replace('<i>', '').replace('</i>', '').replace('<br>', '').replace('</br>', '')
+    
+        # Get timezone and weather data
+        city_lat = city_information['location']['latlon']['latitude']
+        city_lon = city_information['location']['latlon']['longitude']
+        data = requests.get(f'https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/{city_lat},{city_lon}?key=9Z9PX7J5C7ZRC76D38PL4WFL8')
+        json_data = data.json()
+        timezone = json_data['timezone']
+        tzoffset = json_data['tzoffset']
+        description = json_data['days'][0]['description']
+        temp = json_data['days'][0]['temp']
+        user = User.query.filter_by(username = session['username']).first()
+        user_tz = user.employer_timezone.replace(':', '').replace('00', '')
+        daylight_saving = [11,12,1,2,3]
+        current_month = datetime.datetime.now().month
+        if current_month in daylight_saving:
+            time_dif = (int(user_tz) - int(tzoffset))
+        else:
+            time_dif = int(user_tz) - int(tzoffset)+1
 
-    # Get timezone and weather data
-    city_lat = city_information['location']['latlon']['latitude']
-    city_lon = city_information['location']['latlon']['longitude']
-    data = requests.get(f'https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/{city_lat},{city_lon}?key=9Z9PX7J5C7ZRC76D38PL4WFL8')
-    json_data = data.json()
-    timezone = json_data['timezone']
-    tzoffset = json_data['tzoffset']
-    description = json_data['days'][0]['description']
-    temp = json_data['days'][0]['temp']
-    user = User.query.filter_by(username = session['username']).first()
-    user_tz = user.employer_timezone.replace(':', '').replace('00', '')
-    daylight_saving = [11,12,1,2,3]
-    current_month = datetime.datetime.now().month
-    print(current_month)
-    print('*****************')
-    if current_month in daylight_saving:
-        time_dif = (int(user_tz) - int(tzoffset))
-    else:
-        time_dif = int(user_tz) - int(tzoffset)+1
+        #Get Country info
 
-    #Get Country info
-
-    country = city_information['_links']['city:country']['name']
-    country_link = requests.get(f'https://countryinfoapi.com/api/countries/name/{country}')
-    country_data = country_link.json()
-    language = country_data['languages']
-    languages = language.values()
-    driving = country_data['car']['side']
-    currencies = country_data['currencies']
-    currency = str(currencies.keys()).replace("dict_keys(['", "").replace("'])", "")
-    final_currency = currencies[currency]['name']
-    curr = final_currency
-    return render_template('city.html', city_short_name=city_short_name, population=population, user=user, currency=curr, driving=driving, languages=languages, time_dif=time_dif, timezone=timezone, city_image=city_image, city_cats=city_cats, summary=summary, city_name=city_name, temp=temp, description=description)
+        country = city_information['_links']['city:country']['name']
+        country_link = requests.get(f'https://countryinfoapi.com/api/countries/name/{country}')
+        country_data = country_link.json()
+        language = country_data['languages']
+        languages = language.values()
+        driving = country_data['car']['side']
+        currencies = country_data['currencies']
+        currency = str(currencies.keys()).replace("dict_keys(['", "").replace("'])", "")
+        final_currency = currencies[currency]['name']
+        curr = final_currency
+        return render_template('city.html', city_short_name=city_short_name, population=population, user=user, currency=curr, driving=driving, languages=languages, time_dif=time_dif, timezone=timezone, city_image=city_image, city_cats=city_cats, summary=summary, city_name=city_name, temp=temp, description=description)
+    except KeyError:
+        flash("We have no data on this 'city' because it is more of a town...")
+        return redirect('/')
 
 @app.route('/save/<city_short_name>', methods=["GET", "POST"])
 def save_city(city_short_name):
@@ -217,3 +223,23 @@ def remove_u_city(city_id):
     db.session.delete(city)
     db.session.commit()
     return redirect(f'/user/{user}')
+
+@app.route('/city/<int:city_id>/visted', methods=["GET", "POST"])
+def mark_city_as_visited(city_id):
+    """remove city from user cities list and save the city as visited"""
+    city = User_city.query.filter_by(id=city_id).first()
+    user = session['username']
+    city.visited = 1
+    db.session.add(city)
+    db.session.commit()
+    return redirect(f'/user/{user}')   
+
+@app.route('/city/<int:city_id>/notvisited', methods=["GET", "POST"])
+def mark_city_as_not_visited(city_id):
+    """remove city from user cities list and save the city as visited"""
+    city = User_city.query.filter_by(id=city_id).first()
+    user = session['username']
+    city.visited = 0
+    db.session.add(city)
+    db.session.commit()
+    return redirect(f'/user/{user}') 

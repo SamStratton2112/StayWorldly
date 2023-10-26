@@ -155,7 +155,7 @@ class EditUserForm(FlaskForm):
                                                             ('+12:00', 'Nukualofa'),
                                                             ('+12:00', 'Samoa'),
                                                             ('+13:00', 'Tokelau Is.')])
-    username = StringField('Username', validators=[DataRequired()])
+    # username = StringField('Username', validators=[DataRequired(), ])
     password = PasswordField('Password', validators=[Length(min=6)])
 
 class RegisterUserForm(FlaskForm):

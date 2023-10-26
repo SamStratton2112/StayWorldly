@@ -51,6 +51,11 @@ class User_city(db.Model):
     city_name = db.Column(db.Text, nullable=False)
     city_image = db.Column(db.Text, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    visited = db.Column(db.Boolean, nullable=False, default=0)
+
+
+
+        
 
 
 

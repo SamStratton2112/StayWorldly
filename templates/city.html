@@ -41,8 +41,10 @@
         <li>Timezone: {{timezone}}</li>
         {% if time_dif < 0 %}
         <li>{{city_short_name}} is {{time_dif * -1}} hours ahead of your employer timezone.</li>
+        {% elif time_dif == 0 %}
+        <li>This city is in the same timezone as your employer.</li>
         {% else %}
-        <li>{{city_short_name}} is {{time_dif}} hours behind your employer timezone</li>
+        <li>{{city_short_name}} is {{time_dif}} hours behind your employer timezone.</li>
         {% endif %}
     </ul>
 </div>

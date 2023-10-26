@@ -13,10 +13,13 @@
 <div>
     <h3>Your Cities:</h3>
     <ul>
-        {% for city in user_cities %}
+        {% for city in to_visit %}
         <li><a href="/city/{{city}}">{{city}}<img id="homePgCityImg" src="{{city.city_image}}"></a></li>
         <form action="/remove/{{city.id}}" method="POST">
             <button class="delete_u_city">Remove</button>
+        </form>
+        <form action="/city/{{city.id}}/visted" method="POST">
+            <button>Mark as visited</button>
         </form>
         {% endfor %}
     </ul>
@@ -24,6 +27,12 @@
 <div>
     <h3>Cities You've Visited:</h3>
     <ul>
+        {% for city in visited %}
+        <li><a href="/city/{{city}}">{{city}}<img id="homePgCityImg" src="{{city.city_image}}"></a></li>
+        <form action="/city/{{city.id}}/notvisited" method="POST">
+            <button>Mark as not visited</button>
+        </form>
+        {% endfor %}
     </ul>
 </div>
 
