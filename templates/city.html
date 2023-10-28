@@ -12,9 +12,19 @@
         <p>{{summary}}</p>
         <ul>
             <label>Scores out of 10:</label>
-            {% for cat in city_cats %}
-            <li>{{cat['name']}} : {{cat['score_out_of_10']}}</li>
-            {% endfor %}
+            <li>housing {{housing}}</li>
+            <li>cost of living {{cost}}</li>
+            <li>startups {{startups}}</li>
+            <li>venture capital{{v_capital}}</li>
+            <li>travel {{travel}}</li>
+            <li>commute {{commute}}</li>
+            <li>saftey {{saftey}}</li>
+            <li>healthcare {{heathcare}}</li>
+            <li>economy {{economy}}</li>
+            <li>tax {{tax}}</li>
+            <li>internet {{internet}}</li>
+            <li>culture {{culture}}</li>
+            <li>environment {{environment}}</li>
             <li>Driving side: {{driving}}</li>
             <li>Currency: {{currency}}</li>
             <li>Population: {{population}}</li>
@@ -31,7 +41,8 @@
 <div id="weather data">
     <h3>Weather</h3>
     <ul>
-        <li>Current Tempurature: {{temp}} degrees Fahrenheit</li>
+        <li>Current Tempurature in Celsius: {{c_temp}} degrees</li>
+        <li>Current Tempurature in Fahrenheit: {{temp}} degrees</li>
         <li>Current Conditions: {{description}}</li>
     </ul>
 </div>

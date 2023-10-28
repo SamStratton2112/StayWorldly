@@ -4,6 +4,7 @@
     {% for msg in get_flashed_messages() %}
     <div class="alert">{{msg}}</div>
     {% endfor %}
+    <h1>Edit {{user.username}}</h1>
     <form method="POST" id="user_form">
         {{ form.hidden_tag() }}
   
