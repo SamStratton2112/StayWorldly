@@ -4,11 +4,6 @@ a {
     color: white;
 }
 
-.outline {
-    -webkit-text-stroke-width: 1px;
-    -webkit-text-stroke-color: white;
-}
-
 .sw {
     font-family: "Rubik Vinyl", sans-serif;
     color: white;
@@ -18,11 +13,17 @@ a {
 
 body {
     background-image: url('/static/img/base_img.jpg');
+    height: 100vh;
     background-repeat: no-repeat;
+    background-attachment: fixed;
     background-size: cover;
-    /* color: white; */
     font-family: "Ysabeau Office", sans-serif;
     background-color: black;
+}
+
+ol {
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: rgb(255, 255, 255);
 }
 
 ::placeholder {

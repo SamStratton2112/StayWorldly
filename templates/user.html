@@ -1,12 +1,12 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="text-end text-white m-2 containter-fluid">
-    <!-- <h2>User Information</h2>
+<div class="text-white m-2 containter-fluid text-end position-absolute end-0 ">
+    <h2>User Information</h2>
     <ul class="list-unstyled">
         <li> First Name: {{user.first_name}}</li>
         <li> Last Name: {{user.last_name}}</li>
         <li> Employer Timezone: UTC{{user.employer_timezone}}</li>
-    </ul> -->
+    </ul>
     <button class="btn border-white"><a href="/user/{{user.id}}/edit">Edit User</a></button>
 </div>
 <div class="m-5">
@@ -17,7 +17,7 @@
     <span class="h1">Future Adventures:</span>
     <div class="row justify-content-center"> 
     {% for city in to_visit %}
-        <div class="card col-3 p-0 bg-black m-3 mb-4 text-center">
+        <div class="card col-10 col-xl-3  p-0 bg-black m-3 mb-4 text-center">
             <a href="/city/{{city}}">
                 <img class="card-img img-fluid" src="{{city.city_image}}">
                 <div class="card-img-overlay">
@@ -38,7 +38,7 @@
     <span class="h1 text-white">Past Adventures:</span>
     <div class="row justify-content-center">
     {% for city in visited %}
-        <div class="card col-3 p-0 bg-black m-3 mb-4">
+        <div class="card col-10 col-xl-3 p-0 bg-black m-3 mb-4">
             <a href="/city/{{city}}">
                 <img class="card-img img-fluid" src="{{city.city_image}}">
                 <div class="card-img-overlay">

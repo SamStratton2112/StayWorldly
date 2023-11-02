@@ -4,6 +4,7 @@ from forms import LoginForm, RegisterUserForm, CommentForm, EditUserForm, Search
 import sqlalchemy
 import requests
 import datetime
+from sqlalchemy.exc import IntegrityError
 # from requestfuncs import get_city_info
 
 
@@ -40,18 +41,18 @@ def homepage():
         if city.city_name not in all_user_cities:
             all_user_cities.append(city.city_name)
             user_cities.insert(0, city)
-            # Have a secondary list 
     all_user_cities = user_cities[:9:]
     form = SearchForm()
     if form.validate_on_submit():
         city = request.form['city'].capitalize()
-        res = requests.get('https://api.teleport.org/api/cities/', params={'search': city, 'limit':10})
+        res = requests.get('https://api.teleport.org/api/cities/', params={'search': city, 'limit':5})
         city_data = res.json()
         city_results = []
         for city in city_data['_embedded']['city:search-results']:
             city_results.append((city['matching_full_name'], city['_links']['city:item']['href']))
         return render_template('home.html', form=form, cities=city_results, all_user_cities=all_user_cities)
     return render_template('home.html', form=form, all_user_cities=all_user_cities)
+
 
 @app.route('/register', methods=["GET", "POST"])
 def register_user():
@@ -61,21 +62,21 @@ def register_user():
     If username is unavailable flash message and show form"""
     form = RegisterUserForm()
     if form.validate_on_submit():
-        user = User.register(
+        try:
+            user = User.register(
             username=form.username.data,
             first_name=form.first_name.data,
             last_name=form.last_name.data,
             password=form.password.data,
             employer_timezone=form.employer_timezone.data
-        )
-        db.session.add(user)
-        if user:
+            )
+            db.session.add(user)
             db.session.commit() 
             session['username']= user.username
-        else:
-            flash("Username unavailable")
-            return render_template('register.html', form=form)
-        return redirect('/')
+            return redirect('/')
+        except IntegrityError:
+            flash("This Username is unavailable")
+            return redirect('/register')
     return render_template('register.html', form=form)
 
 @app.route('/login', methods=["GET", "POST"])
@@ -87,6 +88,8 @@ def do_login():
         if user:
             session['username']= user.username
             return redirect('/')
+        flash('Incorrect Password!')
+        return render_template('login.html', form=form)
     return render_template('login.html', form=form)
 
 @app.route('/logout')
@@ -192,12 +195,12 @@ def show_city(city):
         c_temp = int((temp-32)*5/9)
         user = User.query.filter_by(username = session['username']).first()
         user_tz = user.employer_timezone.replace(':', '').replace('00', '')
-        daylight_saving = [11,12,1,2,3]
-        current_month = datetime.datetime.now().month
-        if current_month in daylight_saving:
-            time_dif = (int(user_tz) - int(tzoffset))
-        else:
-            time_dif = int(user_tz) - int(tzoffset)+1
+        # daylight_saving = [11,12,1,2,3]
+        # current_month = datetime.datetime.now().month
+        # if current_month in daylight_saving:
+        #     time_dif = (int(user_tz) - int(tzoffset))
+        # else:
+        time_dif = int(user_tz) - int(tzoffset)+1
 
         #Get Country data using the country the city is in from teleport api 
         country = city_information['_links']['city:country']['name']
@@ -205,7 +208,7 @@ def show_city(city):
         country_data = country_link.json()
         language = country_data['languages']
         languages = language.values()
-        driving = country_data['car']['side']
+        driving = country_data['car']['side'].capitalize()
         currencies = country_data['currencies']
         currency = str(currencies.keys()).replace("dict_keys(['", "").replace("'])", "")
         final_currency = currencies[currency]['name']

@@ -2,133 +2,170 @@
 {% block content %}
 
 
-<div class="text-center containter-fluid m-5">
+<div class="text-center containter-fluid m-5 justify-content-center">
     <div class="row justify-content-center m-5">
-        <div class="card col-10 p-0 text-center">
+        <div class="card col p-0 text-center">
             <img class="card-img img-fluid" src="{{city_image}}">
             <div class="card-img-overlay">
-                <span class="card-title fw-bolder text-white h1 position-absolute start-0 top-0 p-3">{{city_name}}</span>
-            </div>
-            <div class="card-body">
-                <form method="POST">
-                    <button class="h1 fw-bolder btn bg-black border-white position-absolute end-0 bottom-0"><a href="/save/{{city_short_name}}">Save City</a></button>
-                </form>
+                <span class="card-title fw-bolder text-white h1 position-absolute start-0 ol top-0 p-3">{{city_name}}</span>
             </div>
         </div>
     </div>
-    <div class="row justify-content-center m-5">
-        <div class="card col-7 p-0 text-center">
-            <div class="card-body">
-                <p class="card-text fw-bolder text-black ">{{summary}}</p>
-            </div>
+    <div class="row justify-content-center">
+        <button class="h1 col-1 fw-bolder btn border-white"><a href="/save/{{city_short_name}}">Save City</a></button>
+    </div>
+    <div class="justify-content-center row m-5">
+        <div class="btn col-10 p-0 text-center">
+                <p class="card-text fw-bolder border-white text-white h2">{{summary}}</p>
         </div>
     </div>
-    <div class="row --bs-light-text-emphasis justify-content-center">
-        <div class="card col-3  p-0 text-center">
-                <div class="card-body">
-                    <span class="card-text fw-bolder">Scores out of 10:</span>
-                        <ul class="list-unstyled">
-                            <li>housing {{housing}}</li>
-                            <li>cost of living {{cost}}</li>
-                            <li>startups {{startups}}</li>
-                            <li>venture capital{{v_capital}}</li>
-                            <li>travel {{travel}}</li>
-                            <li>commute {{commute}}</li>
-                            <li>saftey {{saftey}}</li>
-                            <li>healthcare {{heathcare}}</li>
-                            <li>economy {{economy}}</li>
-                            <li>tax {{tax}}</li>
-                            <li>internet {{internet}}</li>
-                            <li>culture {{culture}}</li>
-                            <li>environment {{environment}}</li>
-                            <li>Driving side: {{driving}}</li>
-                            <li>Currency: {{currency}}</li>
-                            <li>Population: {{population}}</li>
-                        </ul>
-                    </div>
-                </div>
-        <!-- </div> -->
-    <!-- <div class="row justify-content-center"> -->
-        <div class="card col-3 p-0 bg-white text-center">
-                <div class="card-body">
-                    <span class="card-text fw-bolder text-black h1">Language(s):</span>
-                    <div id="Language data">
-                        <ul>
-                            {% for language in languages %}
-                            <li>{{language}}</li>
-                            {% endfor %}
-                        </ul>
-                    </div>
-                </div>
+    <div class="row justify-content-center">
+        <div class="btn col-10 col-xl-4 m-3 pt-2 p-0">
+            <span class="card-text text-white fw-bolder h2">Lifestyle</span>
+            <ul class="m-3 list-unstyled text-white h3 text-start">
+                
+                <li class="m-2"> Predominant Language(s): {{language}}</li>
+                <ul class="list-unstyled text-white h5 ">
+                    {% for language in languages %}
+                    <li class="m-2">- {{language}}</li>
+                    {% endfor %}
+                </ul> 
+                
+                <li class="m-2">Currency: {{currency}}</li>
+                <li class="m-2">Population: {{population}}</li>
+                <li class="m-2">Safety: {{saftey}}/10</li>
+                <ul class="list-unstyled text-white h5 text-start">
+                    {% if saftey <= 6 %}
+                    <li class="m-2">- Safety may be a concern so, especially when traveling alone, take appropriate precautions.</li>
+                    {% else %}
+                    <li class="m-2">- This city is known to be very safe.</li>
+                    {% endif %}
+                </ul> 
+                <li class="m-2">Housing: {{housing}}/10</li>
+                <ul class="list-unstyled text-white h5 text-start">
+                    {% if housing <= 6 %}
+                    <li class="m-2">- Housing may be one of your main expenses.</li>
+                    {% else %}
+                    <li>- This city has affordable housing.</li>
+                    {% endif %}
+                </ul>
+                <li class="m-2">Cost of living: {{cost}}/10</li>
+                <ul class="list-unstyled text-white h5 text-start">
+                    {% if cost <= 6 %}
+                    <li class="m-2">- Daily expenses and bills may add up quickly.</li>
+                    {% else %}
+                    <li class="m-2">- This city has relatively affordable bills and daily expenses should be minimal.</li>
+                    {% endif %}
+                </ul> 
+                <li class="m-2">Commute: {{commute}}/10</li>
+                <ul class="list-unstyled text-white h5 text-start">
+                    {% if commute <= 5 %}
+                    <li class="m-2">- Commuting in this city may be time consuming.</li>
+                    {% else %}
+                    <li class="m-2">- Commuting in this city should be quick and easy.</li>
+                    {% endif %}
+                </ul> 
+                <li class="m-2">Healthcare: {{healthcare}}/10</li>
+                <ul class="list-unstyled text-white h5 text-start">
+                    {% if healthcare <= 6 %}
+                    <li class="m-2">- Healthcare may be difficult to access but certainly not impossible.</li>
+                    {% else %}
+                    <li class="m-2">- Healthcare is highly accessible.</li>
+                    {% endif %}
+                </ul> 
+                <li class="m-2">Internet: {{internet}}/10</li>
+                <ul class="list-unstyled text-white h5 text-start">
+                    {% if internet <= 4 %}
+                    <li class="m-2">- Internet connection may not be very reliable.</li>
+                    {% else %}
+                    <li class="m-2">- Internet connection is very reliable.</li>
+                    {% endif %}
+                </ul> 
+                <li class="m-2">Culture: {{culture}}/10</li>
+                <ul class="list-unstyled text-white h5 text-start">
+                    {% if culture <= 5 %}
+                    <li class="m-2">- Culture is not at the forefront of this city but don't forget about hidden gems!</li>
+                    {% else %}
+                    <li class="m-2">- Culture is thriving here! You'll meet people from several walks of life. Cultural institutions are plentiful.</li>
+                    {% endif %}
+                </ul>          
+                <li class="m-2">Driving side: {{driving}}</li>
+
+            </ul>
         </div>
-    </div>
-    <div class="row justify-content-center m-5">
-        <div class="card col-3 p-0 bg-white text-center">
-                <div class="card-body text-black">
-                    <span class="card-text fw-bolder text-black h1">Weather:</span>
-                    <div id="weather data">
-                        <ul>
-                            <li>Current Tempurature in Celsius: {{c_temp}} degrees</li>
-                            <li>Current Tempurature in Fahrenheit: {{temp}} degrees</li>
-                            <li>Current Conditions: {{description}}</li>
-                        </ul>
-                    </div>
-                </div>
+        <div class="btn col-10 col-xl-4 m-3 p-0 text-center">
+            <p class="fw-bolder text-white h2 m-2">Travel Connectivity</p>
+            <ul class="list-unstyled text-white h4 mb-5">
+                <li class="m-2 text-start">Travel: {{travel}}/10</li>
+                <ul class="list-unstyled text-white h4 text-start">
+                    {% if travel < 5 %}
+                    <li class="m-2">- Airports are accessible but you may have several connecting flights when traveling to and from this city. </p>
+                    {% else %}
+                    <li class="m-2">- Airports are accessible and, depending on your destination, connecting flights shouldn't be excessive.</p>
+                    {% endif %}
+                </ul> 
+            </ul>
+            <span class="card-text text-white fw-bolder h2"> Economy</span>
+            <ul class="list-unstyled text-white m-3 h4 text-start mb-5">
+                <li>Economy: {{economy}}/10</li>
+                <ul class="list-unstyled text-white h4 text-start mb-4">
+                    {% if economy <= 5 %}
+                    <li class="m-2">- Economies fluctuate. Currently the economy in this city is "struggling" which means your money, depending on the currency, may go farther here than it would if visiting a city with a stronger economy.</li>
+                    {% else %}
+                    <li class="m-2">- Economies fluctuate. Currently the economy in this city is "not struggling". You may find that your money, depending on the currency, doesn't go as far as it would in a city whose economy is struggling.</li>
+                    {% endif %}
+                </ul> 
+                <li class="pt-2">Taxes: {{tax}}/10</li>
+                <ul class="list-unstyled text-white h4 text-start">
+                    {% if tax <= 5 %}
+                    <li class="m-2">- Taxes may be high.</li>
+                    {% else %}
+                    <li class="m-2">- Taxes should be manageable.</li>
+                    {% endif %}
+                </ul> 
+            </ul>
+            <span class="card-text text-white fw-bolder h2 mt-5"> Business</span>
+            <ul class="list-unstyled text-white m-3 h4 text-start">
+                <li>Startup Friendly Environment: {{startups}}/10</li>
+                <ul class="list-unstyled text-white h4 text-start">
+                    {% if startups < 6 %}
+                    <li class="m-2">- This may not be the best city for a startup.</li>
+                    {% else %}
+                    <li class="m-2">- This can be a great city for a startup.</li>
+                    {% endif %}
+                </ul> 
+                <li class="pt-4">Venture Capital: {{v_capital}}/10</li>
+                <ul class="list-unstyled text-white h4 text-start">
+                    {% if v_capital < 6 %}
+                    <li class="m-2">- There may not be many venture capital opportunities.</li>
+                    {% else %}
+                    <li class="m-2">- There may be plenty of Venture Capital opportunities.</li>
+                    {% endif %}
+                </ul> 
+            </ul>
         </div>
-    </div>
-    <div class="row justify-content-center m-5">
-        <div class="card col-3 p-0 bg-white text-center">
-                <div class="card-body text-black">
-                    <span class="card-text fw-bolder text-black h1">Timezone:</span>
-                    <div id="timezone data">
-                        <ul>
-                            <li>Timezone: {{timezone}}</li>
-                            {% if time_dif < 0 %}
-                            <li>{{city_short_name}} is {{time_dif * -1}} hours ahead of your employer timezone.</li>
-                            {% elif time_dif == 0 %}
-                            <li>This city is in the same timezone as your employer.</li>
-                            {% else %}
-                            <li>{{city_short_name}} is {{time_dif}} hours behind your employer timezone.</li>
-                            {% endif %}
-                        </ul>
-                    </div>
-                </div>
+        <div class="btn col-10 col-xl-4 p-0 m-3 text-center ps-3">
+            <p class="fw-bolder text-white h2 m-2">Weather</p>
+            <ul class="list-unstyled text-white text-start h5">
+                <li class="m-2 h4">Current Temperature in Celsius: {{c_temp}} degrees</li>
+                <li class="m-2 h4">Current Temperature in Fahrenheit: {{temp}} degrees</li>
+                <li class="m-2 h4">Current Conditions: {{description}}</li>
+            </ul>
+        </div>
+        <div class="btn col-10 col-xl-4 m-3 pt-2 p-0 text-center">
+            <p class="card-text fw-bolder text-white h2">Timezone</p>
+            <ul class="list-unstyled text-white h5">
+                <li class="m-2 h4">Timezone: {{timezone}}</li>
+                {% if time_dif < 0 %}
+                <li class="m-2 h4">{{city_short_name}} is {{time_dif * -1}} hours ahead of your employer timezone.</li>
+                {% elif time_dif == 0 %}
+                <li class="m-2 h4">This city is in the same timezone as your employer.</li>
+                {% else %}
+                <li class="m-2 h4">{{city_short_name}} is {{time_dif}} hours behind your employer timezone.</li>
+                {% endif %}
+            </ul>
         </div>
     </div>
 </div>
-
-
-
-<!-- <div id="city data">
-    <h1 class="">{{city_name}}</h1>
-        <div>
-            <img class="position-fluid top-0" src="{{city_image}}">
-        </div> -->
-        <!-- <p>{{summary}}</p>
-        <ul>
-            <label>Scores out of 10:</label>
-            <li>housing {{housing}}</li>
-            <li>cost of living {{cost}}</li>
-            <li>startups {{startups}}</li>
-            <li>venture capital{{v_capital}}</li>
-            <li>travel {{travel}}</li>
-            <li>commute {{commute}}</li>
-            <li>saftey {{saftey}}</li>
-            <li>healthcare {{heathcare}}</li>
-            <li>economy {{economy}}</li>
-            <li>tax {{tax}}</li>
-            <li>internet {{internet}}</li>
-            <li>culture {{culture}}</li>
-            <li>environment {{environment}}</li>
-            <li>Driving side: {{driving}}</li>
-            <li>Currency: {{currency}}</li>
-            <li>Population: {{population}}</li>
-        </ul>
-</div> --> 
-
-
-
-
-
 
 {% endblock %}

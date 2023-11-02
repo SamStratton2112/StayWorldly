@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
-<h1 class="text-center sw mt-5 mb-5 fw-bolder h1 ">Welcome! <br>Remember to stay worldly</h1>
+<h1 class="text-center sw mt-5 mb-5 fw-bolder h1">Welcome! <br>Remember to stay worldly</h1>
 
 <div class="text-center text-white mb-5">
     {% if 'username' not in session %}
@@ -22,7 +22,7 @@
     <div>
         <ul class="list-unstyled">
             {% for city in cities %}
-            <li><a class="text-white h4" href="/city/{{city[0]}}">{{city[0]}}</a></li>
+            <li><a class="text-white h4 fw-bolder" href="/city/{{city[0]}}">{{city[0]}}</a></li>
             {% endfor %}
         </ul>
     </div>
@@ -34,20 +34,20 @@
     <div class="row justify-content-center">
         {% if 'username' not in session %}
             {% for city in all_user_cities %}
-            <div class="card col-3 p-0 bg-black m-3 mb-4 text-center">
+            <div class="card col-10 col-xl-3 p-0 bg-black m-3 mb-4 text-center">
                     <img class="card-img img-fluid" src="{{city.city_image}}">
                     <div class="card-img-overlay">
-                        <span class="card-title text-white outline h1">{{city}}</span>
+                        <span class="card-title text-white ol fw-bolder h1">{{city}}</span>
                     </div>
             </div>
             {% endfor %}
         {% else %}
             {% for city in all_user_cities %}
-            <div class="card col-3 p-0 bg-black m-3 mb-4 text-center">
+            <div class="card col-10 col-xl-3 p-0 bg-black m-3 mb-4 text-center">
                 <a href="/city/{{city}}">
                     <img class="card-img img-fluid" src="{{city.city_image}}">
                     <div class="card-img-overlay">
-                        <span class="card-title text-white outline h1">{{city}}</span>
+                        <span class="card-title text-white ol fw-bolder h1">{{city}}</span>
                     </div>
                 </a>
             </div>

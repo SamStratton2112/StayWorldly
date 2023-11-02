@@ -1,20 +1,23 @@
 {% extends 'base.html' %}
 {% block content %}
 <div class="text-center">
-    <h2 class="m-5">Welcome back to Stay Worldly</h2>
-    <form method="POST" id="user_form">
+    <h2 class="m-5 text-white sw h1">Welcome back to Stay Worldly</h2>
+    <form method="POST" id="user_form" class="text-white">
       {{ form.hidden_tag() }}
 
       {% for field in form if field.widget.input_type != 'hidden' %}
         {% for error in field.errors %}
           <span>{{ error }}</span>
         {% endfor %}
-        {{field.label}}
+        {{field.label(class="h2")}}
         {{field(class="m-2 btn border-white")}}
         <br>
       {% endfor %}
 
-      <button class="btn border-white text-white">Login</button>
+      <button class="btn border-white text-white">Log in</button>
     </form>
   </div>
 {% endblock %}
+
+
+
