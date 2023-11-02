@@ -34,11 +34,14 @@ def homepage():
         - form to search for cities"""
     
     all_cities = User_city.query.all()
+    all_user_cities = []
     user_cities = []
     for city in all_cities:
-        if city.city_name not in user_cities:
+        if city.city_name not in all_user_cities:
+            all_user_cities.append(city.city_name)
             user_cities.insert(0, city)
-    all_user_cities = user_cities[:10:]
+            # Have a secondary list 
+    all_user_cities = user_cities[:9:]
     form = SearchForm()
     if form.validate_on_submit():
         city = request.form['city'].capitalize()

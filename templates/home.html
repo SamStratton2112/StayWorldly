@@ -1,46 +1,58 @@
 {% extends 'base.html' %}
 {% block content %}
-<h1>Welcome and remember to Stay Worldly!</h1>
+<h1 class="text-center sw mt-5 mb-5 fw-bolder h1 ">Welcome! <br>Remember to stay worldly</h1>
 
-<div>
-    <label>Recently saved cities by users:</label>
-    <ul>
-        {% if 'username' not in session %}
-            {% for city in all_user_cities %}
-            <li>{{city}}</li>
-            {% endfor %}
-        {% else %}
-            {% for city in all_user_cities %}
-            <li><a href="/city/{{city}}">{{city}}<img id="homePgCityImg" src="{{city.city_image}}"></a></li>
-        {% endfor %}
-        {% endif %}
-    </ul>
-</div>
-
-<div>
+<div class="text-center mb-5">
     {% if 'username' not in session %}
-    <p>Log in or register to find your next adventure!</p>
+    <p class="h2">Log in or register to find your next adventure!</p>
     {% else %}
     <form method="POST">
-        <label>Find your next adventure: </label>
+        <span class="h2">Find your next adventure: </span>
         {{ form.hidden_tag() }}
 
         {% for field in form if field.widget.input_type != 'hidden' %}
         {% for error in field.errors %}
           <span>{{ error }}</span>
         {% endfor %}
-        {{field(placeholder=field.label.text)}}
+        {{field(placeholder='Search for any city!', class='btn border-white text-white')}}
         {% endfor %}
-        <button>Submit</button>
+        <button class="btn border-white text-white">Submit</button>
     </form>
 
     <div>
-        <ul>
+        <ul class="list-unstyled">
             {% for city in cities %}
-            <li><a href="/city/{{city[0]}}">{{city[0]}}</a></li>
+            <li><a class="text-white h4" href="/city/{{city[0]}}">{{city[0]}}</a></li>
             {% endfor %}
         </ul>
     </div>
     {% endif %}
+</div>
+
+<div class="text-center containter-fluid ">
+    <span class="h3">Cities saved by other users:</span>
+    <div class="row justify-content-center">
+        {% if 'username' not in session %}
+            {% for city in all_user_cities %}
+            <div class="card col-3 p-0 bg-black m-3 mb-4 text-center">
+                    <img class="card-img img-fluid" src="{{city.city_image}}">
+                    <div class="card-img-overlay">
+                        <span class="card-title text-white outline h1">{{city}}</span>
+                    </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            {% for city in all_user_cities %}
+            <div class="card col-3 p-0 bg-black m-3 mb-4 text-center">
+                <a href="/city/{{city}}">
+                    <img class="card-img img-fluid" src="{{city.city_image}}">
+                    <div class="card-img-overlay">
+                        <span class="card-title text-white outline h1">{{city}}</span>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        {% endif %}
+    </div>
 </div>
 {% endblock %}

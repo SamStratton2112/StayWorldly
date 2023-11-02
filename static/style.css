@@ -1,4 +1,29 @@
-#homePgCityImg {
-    width: 60px;
-    height: 20px
+
+a {
+    text-decoration: none;
+}
+
+.outline {
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: white;
+}
+
+.sw {
+    font-family: "Rubik Vinyl", sans-serif;
+    color: white;
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: rgb(255, 255, 255);
+}
+
+body {
+    background-image: url('/static/img/base_img.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    color: white;
+    font-family: "Ysabeau Office", sans-serif;
+    background-color: black;
+}
+
+::placeholder {
+    color: white;
 }
