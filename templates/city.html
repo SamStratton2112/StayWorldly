@@ -1,15 +1,110 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<form method="POST">
-    <button><a href="/save/{{city_short_name}}">Save City</a></button>
-</form>
-<div id="city data">
-    <h1>{{city_name}}</h1>
-        <div>
-            <img src="{{city_image}}">
+
+<div class="text-center containter-fluid m-5">
+    <div class="row justify-content-center m-5">
+        <div class="card col-10 p-0 text-center">
+            <img class="card-img img-fluid" src="{{city_image}}">
+            <div class="card-img-overlay">
+                <span class="card-title fw-bolder text-white h1 position-absolute start-0 top-0 p-3">{{city_name}}</span>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <button class="h1 fw-bolder btn bg-black border-white position-absolute end-0 bottom-0"><a href="/save/{{city_short_name}}">Save City</a></button>
+                </form>
+            </div>
         </div>
-        <p>{{summary}}</p>
+    </div>
+    <div class="row justify-content-center m-5">
+        <div class="card col-7 p-0 text-center">
+            <div class="card-body">
+                <p class="card-text fw-bolder text-black ">{{summary}}</p>
+            </div>
+        </div>
+    </div>
+    <div class="row --bs-light-text-emphasis justify-content-center">
+        <div class="card col-3  p-0 text-center">
+                <div class="card-body">
+                    <span class="card-text fw-bolder">Scores out of 10:</span>
+                        <ul class="list-unstyled">
+                            <li>housing {{housing}}</li>
+                            <li>cost of living {{cost}}</li>
+                            <li>startups {{startups}}</li>
+                            <li>venture capital{{v_capital}}</li>
+                            <li>travel {{travel}}</li>
+                            <li>commute {{commute}}</li>
+                            <li>saftey {{saftey}}</li>
+                            <li>healthcare {{heathcare}}</li>
+                            <li>economy {{economy}}</li>
+                            <li>tax {{tax}}</li>
+                            <li>internet {{internet}}</li>
+                            <li>culture {{culture}}</li>
+                            <li>environment {{environment}}</li>
+                            <li>Driving side: {{driving}}</li>
+                            <li>Currency: {{currency}}</li>
+                            <li>Population: {{population}}</li>
+                        </ul>
+                    </div>
+                </div>
+        <!-- </div> -->
+    <!-- <div class="row justify-content-center"> -->
+        <div class="card col-3 p-0 bg-white text-center">
+                <div class="card-body">
+                    <span class="card-text fw-bolder text-black h1">Language(s):</span>
+                    <div id="Language data">
+                        <ul>
+                            {% for language in languages %}
+                            <li>{{language}}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+        </div>
+    </div>
+    <div class="row justify-content-center m-5">
+        <div class="card col-3 p-0 bg-white text-center">
+                <div class="card-body text-black">
+                    <span class="card-text fw-bolder text-black h1">Weather:</span>
+                    <div id="weather data">
+                        <ul>
+                            <li>Current Tempurature in Celsius: {{c_temp}} degrees</li>
+                            <li>Current Tempurature in Fahrenheit: {{temp}} degrees</li>
+                            <li>Current Conditions: {{description}}</li>
+                        </ul>
+                    </div>
+                </div>
+        </div>
+    </div>
+    <div class="row justify-content-center m-5">
+        <div class="card col-3 p-0 bg-white text-center">
+                <div class="card-body text-black">
+                    <span class="card-text fw-bolder text-black h1">Timezone:</span>
+                    <div id="timezone data">
+                        <ul>
+                            <li>Timezone: {{timezone}}</li>
+                            {% if time_dif < 0 %}
+                            <li>{{city_short_name}} is {{time_dif * -1}} hours ahead of your employer timezone.</li>
+                            {% elif time_dif == 0 %}
+                            <li>This city is in the same timezone as your employer.</li>
+                            {% else %}
+                            <li>{{city_short_name}} is {{time_dif}} hours behind your employer timezone.</li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- <div id="city data">
+    <h1 class="">{{city_name}}</h1>
+        <div>
+            <img class="position-fluid top-0" src="{{city_image}}">
+        </div> -->
+        <!-- <p>{{summary}}</p>
         <ul>
             <label>Scores out of 10:</label>
             <li>housing {{housing}}</li>
@@ -29,36 +124,10 @@
             <li>Currency: {{currency}}</li>
             <li>Population: {{population}}</li>
         </ul>
-</div>
-<div id="Language data">
-    <h2>Language(s)</h2>
-    <ul>
-        {% for language in languages %}
-        <li>{{language}}</li>
-        {% endfor %}
-    </ul>
-</div>
-<div id="weather data">
-    <h3>Weather</h3>
-    <ul>
-        <li>Current Tempurature in Celsius: {{c_temp}} degrees</li>
-        <li>Current Tempurature in Fahrenheit: {{temp}} degrees</li>
-        <li>Current Conditions: {{description}}</li>
-    </ul>
-</div>
-<div id="timezone data">
-    <h4>Timezone data</h4>
-    <ul>
-        <li>Timezone: {{timezone}}</li>
-        {% if time_dif < 0 %}
-        <li>{{city_short_name}} is {{time_dif * -1}} hours ahead of your employer timezone.</li>
-        {% elif time_dif == 0 %}
-        <li>This city is in the same timezone as your employer.</li>
-        {% else %}
-        <li>{{city_short_name}} is {{time_dif}} hours behind your employer timezone.</li>
-        {% endif %}
-    </ul>
-</div>
+</div> --> 
+
+
+
 
 
 

@@ -1,6 +1,7 @@
 
 a {
     text-decoration: none;
+    color: white;
 }
 
 .outline {
@@ -19,7 +20,7 @@ body {
     background-image: url('/static/img/base_img.jpg');
     background-repeat: no-repeat;
     background-size: cover;
-    color: white;
+    /* color: white; */
     font-family: "Ysabeau Office", sans-serif;
     background-color: black;
 }

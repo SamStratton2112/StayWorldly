@@ -2,7 +2,7 @@
 {% block content %}
 <h1 class="text-center sw mt-5 mb-5 fw-bolder h1 ">Welcome! <br>Remember to stay worldly</h1>
 
-<div class="text-center mb-5">
+<div class="text-center text-white mb-5">
     {% if 'username' not in session %}
     <p class="h2">Log in or register to find your next adventure!</p>
     {% else %}
@@ -29,8 +29,8 @@
     {% endif %}
 </div>
 
-<div class="text-center containter-fluid ">
-    <span class="h3">Cities saved by other users:</span>
+<div class="text-center  text-white containter-fluid ">
+    <span class="h2">Cities saved by other users:</span>
     <div class="row justify-content-center">
         {% if 'username' not in session %}
             {% for city in all_user_cities %}

@@ -21,8 +21,6 @@ class LoginForm(FlaskForm):
 
 class EditUserForm(FlaskForm):
     """Edit user details form"""
-    first_name = StringField('First Name', validators=[DataRequired()])
-    last_name = StringField('Last Name', validators=[DataRequired()])
     employer_timezone = SelectField('Employer Timezone(optional)', choices=[('-11:00', 'American Samoa'),
                                                             ('-11:00', 'International Date Line West'),
                                                             ('-11:00', 'Midway Island'),
@@ -156,6 +154,8 @@ class EditUserForm(FlaskForm):
                                                             ('+12:00', 'Samoa'),
                                                             ('+13:00', 'Tokelau Is.')])
     # username = StringField('Username', validators=[DataRequired(), ])
+    first_name = StringField('First Name', validators=[DataRequired()])
+    last_name = StringField('Last Name', validators=[DataRequired()])
     password = PasswordField('Password', validators=[Length(min=6)])
 
 class RegisterUserForm(FlaskForm):

@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
 <div class="text-center">
-    <h2>Welcome back to Stay Worldly</h2>
+    <h2 class="m-5">Welcome back to Stay Worldly</h2>
     <form method="POST" id="user_form">
       {{ form.hidden_tag() }}
 
@@ -10,11 +10,11 @@
           <span>{{ error }}</span>
         {% endfor %}
         {{field.label}}
-        {{field(placeholder=field.label.text)}}
+        {{field(class="m-2 btn border-white")}}
         <br>
       {% endfor %}
 
-      <button>Login</button>
+      <button class="btn border-white text-white">Login</button>
     </form>
   </div>
 {% endblock %}

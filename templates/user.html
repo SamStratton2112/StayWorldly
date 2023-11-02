@@ -1,29 +1,32 @@
 {% extends 'base.html' %}
 {% block content %}
-<h1 class="text-center sw text-white h1 m-5">Stay worldly {{user.username}}</h1>
-<div class="text-end m-2 position-absolute end-0">
-    <h2>User Information</h2>
+<div class="text-end text-white m-2 containter-fluid">
+    <!-- <h2>User Information</h2>
     <ul class="list-unstyled">
         <li> First Name: {{user.first_name}}</li>
         <li> Last Name: {{user.last_name}}</li>
         <li> Employer Timezone: UTC{{user.employer_timezone}}</li>
-    </ul>
-    <button><a href="/user/{{user.id}}/edit">Edit User</a></button>
+    </ul> -->
+    <button class="btn border-white"><a href="/user/{{user.id}}/edit">Edit User</a></button>
 </div>
-<div class="text-center px-4 containter-fluid">
-    <span class="h2 sw">Future Adventures:</span>
-    <div class="row gx-5 justify-content-center"> 
+<div class="m-5">
+    <h1 class="text-center sw h1 mt-5">Stay Worldly {{user.username}}</h1>
+</div>
+
+<div class="text-center text-white px-4 containter-fluid">
+    <span class="h1">Future Adventures:</span>
+    <div class="row justify-content-center"> 
     {% for city in to_visit %}
-        <div class="card col-4 p-1 bg-black m-1 text-center">
+        <div class="card col-3 p-0 bg-black m-3 mb-4 text-center">
             <a href="/city/{{city}}">
-                <img class="card-img" src="{{city.city_image}}">
+                <img class="card-img img-fluid" src="{{city.city_image}}">
                 <div class="card-img-overlay">
                     <span class="card-title text-white outline h1">{{city}}</span>
                     <form action="/remove/{{city.id}}" method="POST">
-                        <button class="delete_u_city btn text-white position-absolute end-0 bottom-0">Remove</button>
+                        <button class="delete_u_city btn border-white text-white m-1 position-absolute end-0 bottom-0">Remove</button>
                     </form>
                     <form action="/city/{{city.id}}/visted" method="POST">
-                        <button class="position-absolute btn text-white start-0 bottom-0">Mark as visited</button>
+                        <button class="position-absolute btn border-white text-white m-1 start-0 bottom-0">Mark as visited</button>
                     </form>
                 </div>
             </a>
@@ -31,18 +34,17 @@
     {% endfor %}
     </div>
 </div>
-
-<div class="text-center px-4 containter">
-    <span class="h2 sw">Past Adventures:</span>
-    <div class="row gx-5"></div>
+<div class="text-center text-white px-4 mt-5 containter-fluid">
+    <span class="h1 text-white">Past Adventures:</span>
+    <div class="row justify-content-center">
     {% for city in visited %}
-        <div class="card col-8 p-1 bg-black m-1 text-center">
+        <div class="card col-3 p-0 bg-black m-3 mb-4">
             <a href="/city/{{city}}">
-                <img class="card-img" src="{{city.city_image}}">
+                <img class="card-img img-fluid" src="{{city.city_image}}">
                 <div class="card-img-overlay">
                     <span class="card-title text-white outline h1">{{city}}</span>
                     <form action="/city/{{city.id}}/notvisited" method="POST">
-                        <button class="position-absolute btn text-white start-0 bottom-0">Mark as not visited</button>
+                        <button class="position-absolute btn border-white text-white m-1 start-0 bottom-0">Mark as not visited</button>
                     </form>
                 </div>
             </a>
