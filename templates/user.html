@@ -5,23 +5,23 @@
     <ul class="list-unstyled">
         <li> First Name: {{user.first_name}}</li>
         <li> Last Name: {{user.last_name}}</li>
-        <li> Employer Timezone: UTC{{user.employer_timezone}}</li>
+        <li> Employer Timezone: UTC {{user.employer_timezone}}</li>
     </ul>
-    <button class="btn border-white"><a href="/user/{{user.id}}/edit">Edit User</a></button>
+    <a href="/user/{{user.id}}/edit"><button class="btn border-white text-white">Edit User</button></a>
 </div>
 <div class="m-5">
     <h1 class="text-center sw h1 mt-5">Stay Worldly {{user.username}}</h1>
 </div>
 
 <div class="text-center text-white px-4 containter-fluid">
-    <span class="h1">Future Adventures:</span>
+    <span class="h1 ol">Future Adventures:</span>
     <div class="row justify-content-center"> 
     {% for city in to_visit %}
         <div class="card col-10 col-xl-3  p-0 bg-black m-3 mb-4 text-center">
-            <a href="/city/{{city}}">
+            <a href="/city/{{city}}" class="loadbtn">
                 <img class="card-img img-fluid" src="{{city.city_image}}">
                 <div class="card-img-overlay">
-                    <span class="card-title text-white outline h1">{{city}}</span>
+                    <span class="card-title text-white ol h1">{{city}}</span>
                     <form action="/remove/{{city.id}}" method="POST">
                         <button class="delete_u_city btn border-white text-white m-1 position-absolute end-0 bottom-0">Remove</button>
                     </form>
@@ -34,15 +34,16 @@
     {% endfor %}
     </div>
 </div>
+
 <div class="text-center text-white px-4 mt-5 containter-fluid">
-    <span class="h1 text-white">Past Adventures:</span>
+    <span class="h1 text-white ol">Past Adventures:</span>
     <div class="row justify-content-center">
     {% for city in visited %}
         <div class="card col-10 col-xl-3 p-0 bg-black m-3 mb-4">
-            <a href="/city/{{city}}">
+            <a href="/city/{{city}}" class="loadbtn">
                 <img class="card-img img-fluid" src="{{city.city_image}}">
                 <div class="card-img-overlay">
-                    <span class="card-title text-white outline h1">{{city}}</span>
+                    <span class="card-title text-white ol h1">{{city}}</span>
                     <form action="/city/{{city.id}}/notvisited" method="POST">
                         <button class="position-absolute btn border-white text-white m-1 start-0 bottom-0">Mark as not visited</button>
                     </form>

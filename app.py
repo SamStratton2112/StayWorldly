@@ -5,7 +5,6 @@ import sqlalchemy
 import requests
 import datetime
 from sqlalchemy.exc import IntegrityError
-# from requestfuncs import get_city_info
 
 
 
@@ -59,7 +58,7 @@ def register_user():
     """Handle user registration.
     Create a new user and add to db. Redirect to homepage with new user logged in.
     If form not valid, redirect back to form.
-    If username is unavailable flash message and show form"""
+    If username is unavailable flash message and redirect back to form"""
     form = RegisterUserForm()
     if form.validate_on_submit():
         try:
@@ -88,7 +87,7 @@ def do_login():
         if user:
             session['username']= user.username
             return redirect('/')
-        flash('Incorrect Password!')
+        flash('Incorrect Username or Password!')
         return render_template('login.html', form=form)
     return render_template('login.html', form=form)
 
@@ -138,6 +137,7 @@ def edit_user(user_id):
 @app.route('/city/<city>', methods=["GET", "POST"])
 def show_city(city):
     """Get all relevant information about a city"""
+
     # Get City data from Teleport API
     try: 
         res = requests.get('https://api.teleport.org/api/cities/', params={'search': city, 'limit':1})
@@ -195,12 +195,12 @@ def show_city(city):
         c_temp = int((temp-32)*5/9)
         user = User.query.filter_by(username = session['username']).first()
         user_tz = user.employer_timezone.replace(':', '').replace('00', '')
-        # daylight_saving = [11,12,1,2,3]
-        # current_month = datetime.datetime.now().month
-        # if current_month in daylight_saving:
-        #     time_dif = (int(user_tz) - int(tzoffset))
-        # else:
-        time_dif = int(user_tz) - int(tzoffset)+1
+        daylight_saving = [11,12,1,2,3]
+        current_month = datetime.datetime.now().month
+        if current_month in daylight_saving:
+            time_dif = (int(user_tz) - int(tzoffset))+1
+        else:
+            time_dif = int(user_tz) - int(tzoffset)
 
         #Get Country data using the country the city is in from teleport api 
         country = city_information['_links']['city:country']['name']

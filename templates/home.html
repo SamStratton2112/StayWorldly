@@ -4,10 +4,10 @@
 
 <div class="text-center text-white mb-5">
     {% if 'username' not in session %}
-    <p class="h2">Log in or register to find your next adventure!</p>
+    <p class="h2 ol">Log in or register to find your next adventure!</p>
     {% else %}
     <form method="POST">
-        <span class="h2">Find your next adventure: </span>
+        <span class="h2 ol">Find your next adventure: </span>
         {{ form.hidden_tag() }}
 
         {% for field in form if field.widget.input_type != 'hidden' %}
@@ -18,19 +18,17 @@
         {% endfor %}
         <button class="btn border-white text-white">Submit</button>
     </form>
-
     <div>
         <ul class="list-unstyled">
             {% for city in cities %}
-            <li><a class="text-white h4 fw-bolder" href="/city/{{city[0]}}">{{city[0]}}</a></li>
+            <li><a class="text-white h4 fw-bolder loadbtn" href="/city/{{city[0]}}">{{city[0]}}</a></li>
             {% endfor %}
         </ul>
     </div>
     {% endif %}
 </div>
-
-<div class="text-center  text-white containter-fluid ">
-    <span class="h2">Cities saved by other users:</span>
+<div class="text-center text-white containter-fluid ">
+    <span class="h2 ol">Cities saved by other users:</span>
     <div class="row justify-content-center">
         {% if 'username' not in session %}
             {% for city in all_user_cities %}
@@ -44,12 +42,12 @@
         {% else %}
             {% for city in all_user_cities %}
             <div class="card col-10 col-xl-3 p-0 bg-black m-3 mb-4 text-center">
-                <a href="/city/{{city}}">
-                    <img class="card-img img-fluid" src="{{city.city_image}}">
-                    <div class="card-img-overlay">
-                        <span class="card-title text-white ol fw-bolder h1">{{city}}</span>
-                    </div>
-                </a>
+                    <a href="/city/{{city}}" class="loadbtn">
+                        <img class="card-img img-fluid" src="{{city.city_image}}">
+                        <div class="card-img-overlay">
+                            <span class="card-title text-white ol fw-bolder h1">{{city}}</span>
+                        </div>
+                    </a>
             </div>
             {% endfor %}
         {% endif %}

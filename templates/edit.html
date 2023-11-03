@@ -7,18 +7,16 @@
     <h1 class="sw m-5">Edit {{user.username}}</h1>
     <form method="POST" id="user_form" class="text-white">
         {{ form.hidden_tag() }}
-  
         {% for field in form if field.widget.input_type != 'hidden' %}
           {% for error in field.errors %}
-            <span>{{ error }}</span>
+            <span class="h2">{{ error }}</span>
           {% endfor %}
           {{field.label(class="h2")}}
           {{field(placeholder=field.label.text, class="m-2 fw-bolder text-white btn border-white")}}
           <br>
         {% endfor %}
-  
         <button class="btn text-white border-white m-3">Save</button>
       </form>
-      <button class="btn text-white border-white m-3"><a href="/user/{{user.id}}">Cancel</a></button>
+      <a href="/user/{{user.id}}"><button class="btn text-white border-white m-3">Cancel</button></a>
 </div>
 {% endblock %}

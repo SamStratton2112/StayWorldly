@@ -21,11 +21,17 @@ body {
     background-color: black;
 }
 
-ol {
-    -webkit-text-stroke-width: 1px;
-    -webkit-text-stroke-color: rgb(255, 255, 255);
+.ol {
+    -webkit-text-stroke-width: 2px;
+    -webkit-text-stroke-color: white;
 }
 
 ::placeholder {
     color: white;
+}
+
+#spin {
+    display: none;
+    height: 70px;
+    width: 70px;
 }

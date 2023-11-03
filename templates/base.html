@@ -16,31 +16,38 @@
 </head>
 <body>
     <nav class="navbar navbar-expand-md navbar-dark bg-black"> 
-        <a href="/" class="navbar-brand sw ps-3">Stay Worldly</a>
-        <button class="navbar-toggler" data-toggle="collapse" data-target="#navigation">
+        <div class="container-fluid">
+        <a class="navbar-brand sw ps-3" href="/">Stay Worldly</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navtarget">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <!-- revisit this, small screen -> hamburger menu isn't working when navbar-expand is tet to lg line 15 -->
-        <div class="collapse navbar-collapse pe-2 justify-content-end" id="navigation">
-            <div class="navbar-nav">
-                <ul class="nav">
+        <div class="collapse navbar-collapse justify-content-end" id="navtarget">
+             <ul class="navbar-nav" id="navtarget>
                     {% if 'username' not in session %}
-                    <li class="nav-item"><a class="nav-link text-white" href="/register">Register</a></li>
-                    <li class="nav-item"><a class="nav-link text-white" href="/login">Log in</a></li>
+                    <li class="nav-item"><a class="nav-link text-white text-end" href="/register">Register</a></li>
+                    <li class="nav-item"><a class="nav-link text-white text-end" href="/login">Log in</a></li>
                     {% else %} 
-                    <li class="nav-item"><a class="nav-link text-white" href="/user/{{session.get('username')}}">{{session.get('username')}}</a></li>
-                    <li class="nav-item"><a class="nav-link text-white text-center" href="/">Find More Cities</a></li>
-                    <li class="nav-item"><a class="nav-link text-white" href="/logout">Log Out</a></li>
+                    <li class="nav-item"><a class="nav-link text-white text-end" href="/user/{{session.get('username')}}">{{session.get('username')}}</a></li>
+                    <li class="nav-item"><a class="nav-link text-white text-end" href="/">Find More Cities</a></li>
+                    <li class="nav-item"><a class="nav-link text-white text-end" href="/logout">Log Out</a></li>
                     {% endif %}
-                </ul>
-            </div>
+             </ul> 
+        </div>
         </div>
     </nav>
+    <div class="d-flex text-center position-absolute top-50 start-50 z-1">
+        <div class="spinner-border text-white" id="spin" role="status">
+          <span class="visually-hidden"></span>
+        </div>
+    </div>
     {% for msg in get_flashed_messages() %}
     <div class="alert alert-secondary text-center">{{msg}}</div>
     {% endfor %}
     {% block content %}Body content{% endblock %}
    
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/jquery"></script>
+<script src="https://unpkg.com/axios/dist/axios.js"></script>
+<script src="/static/app.js"></script>
 </body>
 </html>
