@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, render_template, redirect, session, g, flash
+from flask import Flask, request, render_template, redirect, session, flash
 from models import db, connect_db, User, User_city
 from forms import LoginForm, RegisterUserForm, CommentForm, EditUserForm, SearchForm
 import sqlalchemy
