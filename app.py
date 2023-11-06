@@ -195,12 +195,7 @@ def show_city(city):
         c_temp = int((temp-32)*5/9)
         user = User.query.filter_by(username = session['username']).first()
         user_tz = user.employer_timezone.replace(':', '').replace('00', '')
-        daylight_saving = [11,12,1,2,3]
-        current_month = datetime.datetime.now().month
-        if current_month in daylight_saving:
-            time_dif = (int(user_tz) - int(tzoffset))+1
-        else:
-            time_dif = int(user_tz) - int(tzoffset)
+        time_dif = int(user_tz) - int(tzoffset)
 
         #Get Country data using the country the city is in from teleport api 
         country = city_information['_links']['city:country']['name']
