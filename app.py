@@ -93,6 +93,7 @@ def do_login():
         user = User.authenticate(form.username.data, form.password.data)
         if user:
             session['username']= user.username
+            print(session['username'])
             return redirect('/')
         flash('Incorrect Username or Password!')
         return render_template('login.html', form=form)
