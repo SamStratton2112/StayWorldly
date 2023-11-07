@@ -64,6 +64,7 @@ def register_user():
     If username is unavailable flash message and redirect back to form"""
     form = RegisterUserForm()
     if form.validate_on_submit():
+        print('validated')
         try:
             user = User.register(
             username=form.username.data,
