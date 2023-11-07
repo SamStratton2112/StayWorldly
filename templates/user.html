@@ -23,10 +23,10 @@
                 <div class="card-img-overlay">
                     <span class="card-title text-white ol h3">{{city}}</span>
                     <form action="/remove/{{city.id}}" method="POST">
-                        <button class="delete_u_city btn border-white text-white m-1 position-absolute ol end-0 bottom-0">Remove</button>
+                        <button class="delete_u_city btn border-white text-white m-1 position-absolute ol h3 end-0 bottom-0">Remove</button>
                     </form>
                     <form action="/city/{{city.id}}/visted" method="POST">
-                        <button class="position-absolute btn border-white text-white ol m-1 start-0 bottom-0">Mark as visited</button>
+                        <button class="position-absolute btn border-white text-white ol m-1 h3 start-0 bottom-0">Mark as visited</button>
                     </form>
                 </div>
             </a>
@@ -46,9 +46,9 @@
             <a href="/city/{{city}}" class="loadbtn">
                 <img class="card-img img-fluid" src="{{city.city_image}}">
                 <div class="card-img-overlay">
-                    <span class="card-title text-white ol h1">{{city}}</span>
+                    <span class="card-title text-white ol h3">{{city}}</span>
                     <form action="/city/{{city.id}}/notvisited" method="POST">
-                        <button class="position-absolute btn border-white text-white m-1 ol start-0 bottom-0">Mark as not visited</button>
+                        <button class="position-absolute btn border-white text-white m-1 ol h3 start-0 bottom-0">Mark as not visited</button>
                     </form>
                 </div>
             </a>
