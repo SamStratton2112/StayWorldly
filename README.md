@@ -1,5 +1,5 @@
 
-# Stay Worldly : (link coming soon)
+# Stay Worldly : https://stay-worldly.onrender.com/
 
 
 Stay Worldly allows a user to create an account, search for cities world wide, learn about selected cities, save cities to their user page, and mark saved cities as visited. I created this for remote workers to see places they may want to visit or move to.
@@ -36,7 +36,7 @@ Stay Worldly allows a user to create an account, search for cities world wide, l
 3. test_user_city.py
 
 
-These tests can be ran with:
+These tests can be ran in the terminal with:
 - python -m unittest file_name.py
 
 
@@ -54,7 +54,6 @@ These tests can be ran with:
 
 
 ### Tech Stack:
-
 
 #### Front end
 1. html
