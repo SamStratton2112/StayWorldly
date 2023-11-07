@@ -1,26 +1,5 @@
 {% extends 'base.html' %}
 
-{% block head %}
-<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-   <script>
-      $(document).ready(function() {
-         $('form').submit(function(event) {
-            event.preventDefault();
-            $.ajax({
-               type: 'POST',
-               url: '/register',
-               data: $('form').serialize(),
-               success: function() {
-                  $('#username').val('');
-                  $('#password').val('');
-                  alert('Registration Successful!');
-               }
-            });
-         });
-      });
-   </script>
-{% endblock %}
-
 {% block content %}
 <div class="text-center">
     <h2 class="m-5 text-white sw h1">Join Stay Worldly</h2>
@@ -39,4 +18,30 @@
       <button class=" text-white m-2 btn border-white">Register</button>
     </form>
   </div>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.js"
+          integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
+          crossorigin="anonymous"></script>
+ 
+  <script type="text/javascript">
+    $(document).on('submit','#user_form',function(e){
+      console.log('hello');
+      e.preventDefault();
+      $.ajax({
+        type:'POST',
+        url:'/register',
+        data:{
+          username:$("#username").val(),
+          first_name:$("#first_name").val(),
+          last_name:$("#last_name").val(),
+          password:$("#password").val(),
+          employer_timezone:$("#employer_timezone").val() 
+        },
+        success:function()
+        {
+          alert('success!');
+        }
+      })
+    });
+  </script>
 {% endblock %}
