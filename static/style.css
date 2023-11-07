@@ -22,9 +22,10 @@ body {
 }
 
 .ol {
-    -webkit-text-stroke-width: 1.5px;
+    -webkit-text-stroke-width: 0.5px;
     -webkit-text-stroke-color: white;
 }
+
 
 ::placeholder {
     color: white;

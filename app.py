@@ -4,6 +4,7 @@ from forms import LoginForm, RegisterUserForm, CommentForm, EditUserForm, Search
 import sqlalchemy
 import requests
 import datetime
+import random
 from sqlalchemy.exc import IntegrityError
 import os 
 
@@ -13,9 +14,11 @@ import os
 app = Flask(__name__)
 
 
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///travel'
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config["SQLALCHEMY_ECHO"] = True
+# app.config['SECRET_KEY'] = 'secret'
 app.config['SECRET_KEY'] = os.environ['SECRET_KEY']
 
 app.app_context().push()
@@ -35,7 +38,7 @@ def homepage():
         - Navbar shows option to see user page/information
         - list of cities to check out
         - form to search for cities"""
-    
+
     all_cities = User_city.query.all()
     all_user_cities = []
     user_cities = []
