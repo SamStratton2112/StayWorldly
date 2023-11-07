@@ -32,7 +32,7 @@
     <div class="row justify-content-center">
         {% if 'username' not in session %}
             {% for city in all_user_cities %}
-            <div class="card col-9 col-xl-3 p-0 bg-black m-3 mb-4 text-center">
+            <div class="card col-9 col-lg-4 col-xl-3 p-0 bg-black m-3 mb-4 text-center">
                     <img class="card-img img-fluid" src="{{city.city_image}}">
                     <div class="card-img-overlay">
                         <span class="card-title text-white ol fw-bolder h1">{{city}}</span>
@@ -41,7 +41,7 @@
             {% endfor %}
         {% else %}
             {% for city in all_user_cities %}
-            <div class="card col-9 col-xl-3 p-0 bg-black m-3 mb-4 text-center">
+            <div class="card col-9 col-lg-4 col-xl-3 p-0 bg-black m-3 mb-4 text-center">
                     <a href="/city/{{city}}" class="loadbtn">
                         <img class="card-img img-fluid" src="{{city.city_image}}">
                         <div class="card-img-overlay">
