@@ -43,6 +43,9 @@ def homepage():
         if city.city_name not in all_user_cities:
             all_user_cities.append(city.city_name)
             user_cities.insert(0, city)
+        else: 
+            user_cities.remove(city)
+            user_cities.insert(0, city)
     all_user_cities = user_cities[:9:]
     form = SearchForm()
     if form.validate_on_submit():
