@@ -6,13 +6,6 @@ class SearchForm(FlaskForm):
     """search city form"""
     city = StringField('City', validators=[DataRequired()])
 
-class CommentForm(FlaskForm):
-    """comment Form"""
-
-    username = StringField('Username', validators=[DataRequired()])
-    city_name = StringField('City Name', validators=[DataRequired()])
-    comment = TextAreaField('Comment', validators=[DataRequired()])
-
 class LoginForm(FlaskForm):
     """Login form."""
 
