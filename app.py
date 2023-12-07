@@ -90,9 +90,7 @@ def do_login():
     form=LoginForm()
     if form.validate_on_submit():
         print("Validated")
-        username = form.username.data
-        password = form.password.data
-        user = User.authenticate(username, password)
+        user = User.authenticate(form.username.data, form.password.data)
         if user:
             session['username']= user
             print(session['username'])
