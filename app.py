@@ -9,17 +9,15 @@ from sqlalchemy.exc import IntegrityError
 import os 
 
 
-
-
 app = Flask(__name__)
 
 
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///travel'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///travel'
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config["SQLALCHEMY_ECHO"] = True
-# app.config['SECRET_KEY'] = 'secret'
-app.config['SECRET_KEY'] = os.environ['SECRET_KEY']
+app.config['SECRET_KEY'] = 'secret'
+# app.config['SECRET_KEY'] = os.environ['SECRET_KEY']
 
 app.app_context().push()
 
@@ -83,6 +81,7 @@ def register_user():
         except IntegrityError:
             flash("This Username is unavailable")
             return redirect('/register')
+    print(form.errors)
     return render_template('register.html', form=form)
 
 @app.route('/login', methods=["GET", "POST"])
