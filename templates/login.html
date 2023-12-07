@@ -4,8 +4,8 @@
     <h2 class="m-5 text-white sw h1">Welcome back to Stay Worldly</h2>
     <form method="POST" id="user_form" class="text-white" action="/login">
       {{ form.hidden_tag() }}
-      {{ csrf_token }}
-      {{ csrf_token(display="inline") }}
+      {{ form.csrf_token }}
+      {{ form.csrf_token(display="inline") }}
       
 
       {% for field in form if field.widget.input_type != 'hidden' %}
