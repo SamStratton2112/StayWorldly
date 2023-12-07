@@ -12,19 +12,19 @@ import os
 app = Flask(__name__)
 
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///travel'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///travel'
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config["SQLALCHEMY_ECHO"] = True
-app.config['SECRET_KEY'] = 'secret'
-# app.config['SECRET_KEY'] = os.environ['SECRET_KEY']
+# app.config['SECRET_KEY'] = 'secret'
+app.config['SECRET_KEY'] = os.environ['SECRET_KEY']
 
 app.app_context().push()
 
 
 connect_db(app)
 
-db.create_all()
+# db.create_all()
 
 @app.route('/', methods=["GET", "POST"])
 def homepage():
@@ -98,7 +98,7 @@ def do_login():
         return render_template('login.html', form=form)
     return render_template('login.html', form=form)
 
-@app.route('/logout')
+@app.route('/logout', methods=["POST"])
 def logout():
     """handle user logout"""
     session.pop('username')

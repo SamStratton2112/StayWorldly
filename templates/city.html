@@ -18,7 +18,9 @@
         </div>
     </div>
     <div class="row ">
-        <a href="/save/{{city_short_name}}" class="loadbtn"><button class="h1 col-1 fw-bolder btn border-white text-white">Save City</button></a>
+        <form action="/save/{{city_short_name}}" method="POST">
+            <button class="h1 loadbtn col-1 fw-bolder btn border-white text-white">Save City</button>
+        </form>
     </div>
     <div class="justify-content-center row m-5">
         <div class="btn col-10 p-0 text-center">

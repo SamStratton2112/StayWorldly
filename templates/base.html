@@ -22,14 +22,34 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse justify-content-end" id="navtarget">
-             <ul class="navbar-nav" id="navtarget>
+             <ul class="navbar-nav" id="navtarget">
                     {% if 'username' not in session %}
-                    <li class="nav-item"><a class="nav-link text-white text-end" href="/register">Register</a></li>
-                    <li class="nav-item"><a class="nav-link text-white text-end" href="/login">Log in</a></li>
+                    <li class="nav-item">
+                        <form class="nav-link text-en" action="/register">
+                            <button type="submit" class="btn text-white" method="GET">Register</button>
+                        </form>
+                    </li>
+                    <li class="nav-item">
+                        <form class="nav-link text-white text-end" action="/login">
+                            <button type="submit" class="btn text-white" method="GET">Log in</button>
+                        </form>
+                    </li>
                     {% else %} 
-                    <li class="nav-item"><a class="nav-link text-white text-end" href="/user/{{session.get('username')}}">{{session.get('username')}}</a></li>
-                    <li class="nav-item"><a class="nav-link text-white text-end" href="/">Find More Cities</a></li>
-                    <li class="nav-item"><a class="nav-link text-white text-end" href="/logout">Log Out</a></li>
+                    <li class="nav-item">
+                        <form class="nav-link text-end" action="/user/{{session.get('username')}}">
+                            <button type="submit" class="btn text-white" method="GET">{{session.get('username')}}</button>
+                        </form>
+                    </li>
+                    <li class="nav-item">
+                        <form class="nav-link text-end" action="/" method="GET">
+                            <button class="btn text-white">Find More Cities</button>
+                        </form>
+                    </li>
+                    <li class="nav-item">
+                        <form class="nav-link text-end" action="/logout" method="POST">
+                            <button type="submit" class="btn text-white">Log Out</button>
+                        </form>
+                    </li>
                     {% endif %}
              </ul> 
         </div>
