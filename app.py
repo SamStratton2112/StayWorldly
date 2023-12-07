@@ -99,6 +99,7 @@ def do_login():
             return redirect('/')
         flash('Incorrect Username or Password!')
         return render_template('login.html', form=form)
+    print(form.errors)
     return render_template('login.html', form=form)
 
 @app.route('/logout', methods=["POST"])
