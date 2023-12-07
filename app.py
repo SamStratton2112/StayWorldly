@@ -89,9 +89,10 @@ def do_login():
     """ handle user log in"""
     form=LoginForm()
     if form.validate_on_submit():
-        username = form.username.data
-        password = form.password.data
-        user = User.authenticate(username, password)
+        print("Validated")
+        u = form.username.data
+        person = User.query.filter_by(username=username).first()
+        user = User.authenticate(u.username, form.password.data)
         if user:
             session['username']= user
             print(session['username'])
@@ -99,6 +100,20 @@ def do_login():
         flash('Incorrect Username or Password!')
         return render_template('login.html', form=form)
     return render_template('login.html', form=form)
+
+    # form=LoginForm()
+    # if form.validate_on_submit():
+    #     print("Validated")
+    #     username = form.username.data
+    #     password = form.password.data
+    #     user = User.authenticate(username, password)
+    #     if user:
+    #         session['username']= user
+    #         print(session['username'])
+    #         return redirect('/')
+    #     flash('Incorrect Username or Password!')
+    #     return render_template('login.html', form=form)
+    # return render_template('login.html', form=form)
 
 @app.route('/logout', methods=["POST"])
 def logout():
