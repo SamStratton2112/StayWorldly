@@ -5,7 +5,7 @@
     <ul class="list-unstyled">
         <li> First Name: {{user.first_name}}</li>
         <li> Last Name: {{user.last_name}}</li>
-        <li> Employer Timezone: UTC {{user.employer_timezone}}</li>
+        <li> Employer Timezone: UTC{{user_tz}}</li>
     </ul>
     <a href="/user/{{user.id}}/edit"><button class="btn border-white text-white">Edit User</button></a>
 </div>
@@ -16,6 +16,7 @@
 <div class="text-center text-white px-4 containter-fluid">
     <span class="h1 ol">Future Adventures:</span>
     <div class="row justify-content-center"> 
+    <!-- list cities to visit in individual cards  -->
     {% for city in to_visit %}
         <div class="card col-9 col-lg-4 col-xl-3 p-0 bg-black m-1 mb-4 text-center">
             <a href="/city/{{city}}" class="loadbtn">
@@ -25,6 +26,7 @@
                     <form action="/remove/{{city.id}}" method="POST">
                         <button class="delete_u_city btn border-white text-white m-1 position-absolute ol btn-sm h5 end-0 bottom-0">Remove</button>
                     </form>
+                    <!-- Change value of visited to 0 from 1 indicating visited  -->
                     <form action="/city/{{city.id}}/visted" method="POST">
                         <button class="position-absolute btn border-white text-white ol m-1 h5 btn-sm start-0 bottom-0">Mark as visited</button>
                     </form>
@@ -34,10 +36,11 @@
     {% endfor %}
     </div>
 </div>
+<!-- button back to homepage  -->
 <div class="container-fluid">
     <a class="nav-link text-white text-center" href="/"><button class="btn border-white text-white">Find More Cities</button></a>
 </div>
-
+<!-- list cities visited in individual cards  -->
 <div class="text-center text-white px-4 mt-5 containter-fluid">
     <span class="h1 text-white ol">Past Adventures:</span>
     <div class="row justify-content-center">
@@ -47,6 +50,7 @@
                 <img class="card-img img-fluid" src="{{city.city_image}}">
                 <div class="card-img-overlay">
                     <span class="card-title text-white ol h3">{{city}}</span>
+                    <!-- Change value of visited to 1 from 0 indicating  not visited  -->
                     <form action="/city/{{city.id}}/notvisited" method="POST">
                         <button class="position-absolute btn btn-sm border-white text-white m-1 ol h5 start-0 bottom-0">Mark as not visited</button>
                     </form>

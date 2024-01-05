@@ -11,33 +11,34 @@ import os
 
 app = Flask(__name__)
 
-
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///travel'
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
+# database for localhost
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///travel'
+# app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config["SQLALCHEMY_ECHO"] = True
-# app.config['SECRET_KEY'] = 'secret'
-app.config['SECRET_KEY'] = os.environ['SECRET_KEY']
+# SECRET_KEY for localhost
+app.config['SECRET_KEY'] = 'secret'
+# app.config['SECRET_KEY'] = os.environ['SECRET_KEY']
 
 app.app_context().push()
 
-
+# use imported function to connect app to database
 connect_db(app)
-
-# db.create_all()
 
 @app.route('/', methods=["GET", "POST"])
 def homepage():
     """Show homepage:
     - if no user is logged in:
         - Navbar shows option to log in/ register 
-        - list of citiies to check out
+        - list of cities 
     - if a user is logged in:
         - Navbar shows option to see user page/information
-        - list of cities to check out
+        - list of cities 
         - form to search for cities"""
 
+    # initial cities list with duplication 
     all_cities = User_city.query.all()
+    # initialize list used to render cities without duplication
     all_user_cities = []
     user_cities = []
     for city in all_cities:
@@ -47,26 +48,35 @@ def homepage():
     all_user_cities = random.sample(user_cities, 9)
     form = SearchForm()
     if form.validate_on_submit():
+        # Ensure capitalized for API request
         city = request.form['city'].capitalize()
+        # Get list of first 5 matching cities 
         res = requests.get('https://api.teleport.org/api/cities/', params={'search': city, 'limit':5})
         city_data = res.json()
+        # initialize list of cities to return
         city_results = []
         for city in city_data['_embedded']['city:search-results']:
-            city_results.append((city['matching_full_name'], city['_links']['city:item']['href']))
+            # add city name and image url
+            city_results.append((
+                city['matching_full_name'], 
+                city['_links']['city:item']['href'])
+                )
         return render_template('home.html', form=form, cities=city_results, all_user_cities=all_user_cities)
+# IF DATABASE IS EMPTY
+#  COMMENT OUT LINES 41-48 AND SUB 
+# (all_user_cities=all_user_cities) FOR (all_user_cities=all_cities) ON RETURN
     return render_template('home.html', form=form, all_user_cities=all_user_cities)
-
 
 @app.route('/register', methods=["GET", "POST"])
 def register_user():
     """Handle user registration.
-    Create a new user and add to db. Redirect to homepage with new user logged in.
-    If form not valid, redirect back to form.
-    If username is unavailable flash message and redirect back to form"""
+    - Create a new user and add to db. Redirect to homepage with new user logged in.
+    - If form not valid, redirect back to form.
+    - If username is unavailable flash message and redirect back to form"""
     form = RegisterUserForm()
     if form.validate_on_submit():
-        print('validated')
         try:
+            # collect information from form
             user = User.register(
             username=form.username.data,
             first_name=form.first_name.data,
@@ -74,14 +84,16 @@ def register_user():
             password=form.password.data,
             employer_timezone=form.employer_timezone.data
             )
+            # add user to datadae
             db.session.add(user)
             db.session.commit() 
+            # set session[username] indicating that a user is logged in
             session['username']= user.username
             return redirect('/')
         except IntegrityError:
+            # handle database duplication error 
             flash("This Username is unavailable")
             return redirect('/register')
-    print(form.errors)
     return render_template('register.html', form=form)
 
 @app.route('/login', methods=["GET", "POST"])
@@ -89,40 +101,48 @@ def do_login():
     """ handle user log in"""
     form=LoginForm()
     if form.validate_on_submit():
-        print("Validated")
         user = User.authenticate(form.username.data, form.password.data)
         if user:
+            # User.authenticate() will return the username of the authenticated user
+            # if user is authenticated set session[username] indicating login 
             session['username']= user
-            print(session['username'])
             return redirect('/')
+            # handle incorred credentials 
         flash('Incorrect Username or Password!')
         return render_template('login.html', form=form)
-    print(form.errors)
     return render_template('login.html', form=form)
 
 @app.route('/logout', methods=["POST"])
 def logout():
     """handle user logout"""
-    print(session['username'])
+    # remove username from session to indicate logged out
     session.pop('username')
     return redirect('/')
 
 @app.route('/user/<username>', methods=["GET", "POST"])
 def show_user(username):
     """show user page"""
+    # handle no logged in user
     if 'username' not in session:
         flash("Access Denied")
         return redirect('/')
+    # select user from database
     user = User.query.filter_by(username = session['username']).first()
+    # trim characters off user timezone
+    user_tz = user.employer_timezone.replace("'", '').replace('[','').replace(']','')
+    # get all user cities
     user_cities = User_city.query.filter_by(user_id = user.id).all()
+    # initialize cities visited
     visited = []
+    # initialize cities not visited
     to_visit = []
     for city in user_cities:
+        # appened each city accordingly
         if city.visited == 0:
             to_visit.append(city)
         else:
             visited.append(city)
-    return render_template('user.html', user=user, visited=visited, to_visit=to_visit)
+    return render_template('user.html', user=user,user_tz=user_tz, visited=visited, to_visit=to_visit)
 
 @app.route('/user/<int:user_id>/edit', methods=["GET", "POST"])
 def edit_user(user_id):
@@ -130,12 +150,23 @@ def edit_user(user_id):
     if 'username' not in session:
         flash("Access Denied")
         return redirect('/')
-    user = User.query.get_or_404(user_id)
+    # get user from database
+    userData = User.query.get_or_404(user_id)
+    user_tz = user.employer_timezone.replace("'", '').replace('[','').replace(']','')
+    # update user timezone
+    
+    # FIX EDIT USER TIMEZONE FORM RENDER
+        # always renders choices[0]
+
+    user.employer_timezone = user_tz
+    print(user.employer_timezone, "****************")
+    # get edit form containing current user information
     form = EditUserForm(obj=user)
     if form.validate_on_submit():
+        # update data from form accordingly
         user.first_name = form.first_name.data
         user.last_name = form.last_name.data
-        user.employer_timezone = form.employer_timezone.data
+        user.employer_timezone = form.employer_timezone.data.replace("'", '').replace('(','').replace(')','')
         if User.authenticate(session['username'], form.password.data):
             db.session.commit()
             return redirect(f'/user/{user.username}')

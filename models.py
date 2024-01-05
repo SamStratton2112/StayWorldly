@@ -6,7 +6,7 @@ db = SQLAlchemy()
 bcrypt = Bcrypt()
 
 def connect_db(app):
-    """connectr to db"""
+    """function to connect to db"""
     db.app=app
     db.init_app(app)
 
@@ -23,6 +23,7 @@ class User(db.Model):
     last_name = db.Column(db.Text, nullable=False)
     employer_timezone = db.Column(db.Text, nullable=True)
 
+    # access cities a user saved and users who have saved a city
     cities = db.relationship('User_city', backref='city_users')
 
     @classmethod
@@ -30,19 +31,29 @@ class User(db.Model):
         """register a user and hash password"""
         hashed = bcrypt.generate_password_hash(password)
         hashed_utf8 = hashed.decode('utf8')
-        return cls(username=username, first_name=first_name, last_name=last_name, 
-                    password=hashed_utf8, employer_timezone=employer_timezone)
+    # return collected information with hashed password, then session.commit()
+        return cls(
+            username=username, 
+            first_name=first_name, 
+            last_name=last_name, 
+            password=hashed_utf8, 
+            employer_timezone=employer_timezone
+            )
     
     @classmethod
     def authenticate(cls, username, password):
+        # Get user from database
         u = User.query.filter_by(username=username).first()
-        print(u.username)
+        # check that the password is correct
         if bcrypt.check_password_hash(u.password, password):
+            # set session[username] = u.username and load home page 
             return u.username
         else:
+            # Throw Invalid credentials error 
             return False
 
 class User_city(db.Model):
+    # backrefd by Users
     """User city model"""
     __tablename__ = 'user_cities'
     def __repr__(self):
@@ -53,19 +64,3 @@ class User_city(db.Model):
     city_image = db.Column(db.Text, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     visited = db.Column(db.Boolean, nullable=False, default=0)
-
-
-
-        
-
-
-
-
-
-
-
-
-
-
-
-

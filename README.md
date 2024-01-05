@@ -28,6 +28,8 @@ Stay Worldly allows a user to create an account, search for cities world wide, l
 3. https://www.visualcrossing.com/resources/documentation/weather-api/timeline-weather-api/
 
 
+### Localhost 
+- If running Stay Worldly locally and your travel database is empty and error will be triggered. To fix this error comment out lines 41-48 and (replace all_user_cities=all_user_cities) with  (all_user_cities=all_cities) on return
 
 
 ### Tests:

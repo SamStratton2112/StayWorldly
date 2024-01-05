@@ -1,12 +1,11 @@
 {% extends 'base.html' %}
+<meta name="csrf-token" content="{{ form.csrf_token }}">
 {% block content %}
 <div class="text-center">
     <h2 class="m-5 text-white sw h1">Welcome back to Stay Worldly</h2>
     <form method="POST" id="user_form" class="text-white" action="/login">
+      <!-- show all fields in form expect for hidden ones -->
       {{ form.hidden_tag() }}
-      {{ form.csrf_token }}
-      {{ form.csrf_token(display="inline") }}
-      
 
       {% for field in form if field.widget.input_type != 'hidden' %}
         {% for error in field.errors %}
@@ -21,6 +20,3 @@
     </form>
   </div>
 {% endblock %}
-
-
-

@@ -15,14 +15,17 @@
     <title>Stay Worldly</title>
 </head>
 <body>
+    <!-- set navbar -->
     <nav class="navbar navbar-expand-md navbar-dark bg-black"> 
         <div class="container-fluid">
         <a class="navbar-brand sw ps-3" href="/">Stay Worldly</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navtarget">
             <span class="navbar-toggler-icon"></span>
         </button>
+        <!-- make responsive -->
         <div class="collapse navbar-collapse justify-content-end" id="navtarget">
              <ul class="navbar-nav" id="navtarget">
+                    <!-- determine which buttons to show based on session[username] -->
                     {% if 'username' not in session %}
                     <li class="nav-item">
                         <form class="nav-link text-en" action="/register">
@@ -55,6 +58,7 @@
         </div>
         </div>
     </nav>
+    <!-- show spinner during request -->
     <div class="d-flex text-center position-absolute top-50 start-50 z-1">
         <div class="spinner-border text-white" id="spin" role="status">
           <span class="visually-hidden"></span>

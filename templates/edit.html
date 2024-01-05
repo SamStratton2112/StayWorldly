@@ -11,7 +11,8 @@
     <div class="alert">{{msg}}</div>
     {% endfor %}
     <h1 class="sw m-5">Edit {{user.username}}</h1>
-    <form method="POST" id="user_form" class="text-white">
+    <!-- show all form fields except for hidden ones -->
+    <form action="/user/{{user.id}}/edit" method="POST" id="user_form" class="text-white" >
         {{ form.hidden_tag() }}
         {% for field in form if field.widget.input_type != 'hidden' %}
           {% for error in field.errors %}

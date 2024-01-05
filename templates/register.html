@@ -4,6 +4,7 @@
 <div class="text-center">
     <h2 class="m-5 text-white sw h1">Join Stay Worldly</h2>
     <form method="POST" id="user_form" class="text-white h2" action="/register">
+      <!-- show all fields in form expect for hidden ones -->
       {{ form.hidden_tag() }}
 
       {% for field in form if field.widget.input_type != 'hidden' %}

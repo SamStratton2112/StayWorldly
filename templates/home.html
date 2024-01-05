@@ -4,8 +4,10 @@
 
 <div class="text-center text-white mb-5">
     {% if 'username' not in session %}
+    <!-- show log in/register message -->
     <p class="h2 ol">Log in or register to find your next adventure!</p>
     {% else %}
+    <!-- show search for a city form -->
     <form method="POST">
         <span class="h2 ol">Find your next adventure: </span>
         {{ form.hidden_tag() }}
@@ -19,6 +21,7 @@
         <button class="btn border-white text-white">Submit</button>
     </form>
     <div>
+        <!-- list to show search results  -->
         <ul class="list-unstyled">
             {% for city in cities %}
             <li><a class="text-white h4 fw-bolder loadbtn" href="/city/{{city[0]}}">{{city[0]}}</a></li>
@@ -27,6 +30,7 @@
     </div>
     {% endif %}
 </div>
+<!-- show city examples -->
 <div class="text-center text-white containter-fluid ">
     <span class="h2 ol">Cities saved by other users:</span>
     <div class="row justify-content-center">
@@ -41,6 +45,7 @@
             {% endfor %}
         {% else %}
             {% for city in all_user_cities %}
+            <!-- generate city card -->
             <div class="card col-9 col-lg-4 col-xl-3 p-0 bg-black m-3 mb-4 text-center">
                     <a href="/city/{{city}}" class="loadbtn">
                         <img class="card-img img-fluid" src="{{city.city_image}}">
