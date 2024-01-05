@@ -1,16 +1,16 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, TextAreaField, SelectField, SubmitField
+from wtforms import StringField, PasswordField, SelectField, SubmitField
 from wtforms.validators import DataRequired, Length
 
 class SearchForm(FlaskForm):
     """search city form"""
     city = StringField('City', validators=[DataRequired()])
     
-class CommentForm(FlaskForm):
-    """comment Form"""
-    username = StringField('Username', validators=[DataRequired()])
-    city_name = StringField('City Name', validators=[DataRequired()])
-    comment = TextAreaField('Comment', validators=[DataRequired()])
+# class CommentForm(FlaskForm):
+#     """comment Form"""
+#     username = StringField('Username', validators=[DataRequired()])
+#     city_name = StringField('City Name', validators=[DataRequired()])
+#     comment = TextAreaField('Comment', validators=[DataRequired()])
 
 class LoginForm(FlaskForm):
     """Login form."""
@@ -159,7 +159,7 @@ class RegisterUserForm(FlaskForm):
     last_name = StringField('Last Name', validators=[DataRequired()])
     username = StringField('Username', validators=[DataRequired()])
     password = PasswordField('Password', validators=[Length(min=6)])
-    employer_timezone = SelectField('Employer Timezone', choices=[((''), 'Select Timezone'),(('-11:00', 'International Date Line West'), 'International Date Line West'),
+    employer_timezone = SelectField('Employer Timezone',validators=[DataRequired()], choices=[((''), 'Select Timezone'),(('-11:00', 'International Date Line West'), 'International Date Line West'),
  (('-10:00', 'Hawaii'), 'Hawaii'),
  (('-09:00', 'Alaska'), 'Alaska'),
  (('-08:00', 'Pacific Time'), 'Pacific Time'),

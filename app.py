@@ -83,6 +83,10 @@ def register_user():
             password=form.password.data,
             employer_timezone=form.employer_timezone.data
             )
+            # handle invalid timezone
+            if employer_timezone == '' :
+                flash("Invalid Timezone!")
+                return redirect('/register')
             # add user to datadae
             db.session.add(user)
             db.session.commit() 
@@ -159,12 +163,16 @@ def edit_user(user_id):
     if form.validate_on_submit():
         # update data timezone
         user.employer_timezone = form.employer_timezone.data.replace("'", '').replace('(','').replace(')','')
+        # handle invalid timezone
+        if user.employer_timezone == '' :
+                flash("Invalid Timezone!")
+                return redirect(f'/user/{user_id}/edit')
         if User.authenticate(session['username'], form.password.data):
             db.session.commit()
             return redirect(f'/user/{user.username}')
         else: 
             flash("Incorrect Password!")
-            return redirect(f'/user/{user.username}')
+            return redirect(f'/user/{user_id}/edit')
     return render_template('edit.html', form=form, user=user)
 
 @app.route('/city/<city>', methods=["GET", "POST"])
