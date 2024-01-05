@@ -1,24 +1,22 @@
 from flask import Flask, request, render_template, redirect, session, flash
 from models import db, connect_db, User, User_city
-from forms import LoginForm, RegisterUserForm, CommentForm, EditUserForm, SearchForm
+from forms import LoginForm, RegisterUserForm, EditUserForm, SearchForm
 import sqlalchemy
 import requests
-import datetime
 import random
 from sqlalchemy.exc import IntegrityError
 import os 
 
-
 app = Flask(__name__)
 
 # database for localhost
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///travel'
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///travel'
+# app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config["SQLALCHEMY_ECHO"] = True
 # SECRET_KEY for localhost
-# app.config['SECRET_KEY'] = 'secret'
-app.config['SECRET_KEY'] = os.environ['SECRET_KEY']
+app.config['SECRET_KEY'] = 'secret'
+# app.config['SECRET_KEY'] = os.environ['SECRET_KEY']
 
 app.app_context().push()
 
@@ -56,15 +54,16 @@ def homepage():
         # initialize list of cities to return
         city_results = []
         for city in city_data['_embedded']['city:search-results']:
-            # add city name and image url
+            # add city name and image url to results list
             city_results.append((
                 city['matching_full_name'], 
                 city['_links']['city:item']['href'])
                 )
         return render_template('home.html', form=form, cities=city_results, all_user_cities=all_user_cities)
 # IF DATABASE IS EMPTY
-#  COMMENT OUT LINES 41-48 AND SUB 
-# (all_user_cities=all_user_cities) FOR (all_user_cities=all_cities) ON RETURN
+#  COMMENT OUT LINES 41-46 AND SUB 
+# (all_user_cities=all_user_cities) FOR (all_user_cities=all_cities) 
+# ON RETURN IN LINES 62 AND 66
     return render_template('home.html', form=form, all_user_cities=all_user_cities)
 
 @app.route('/register', methods=["GET", "POST"])
@@ -129,7 +128,10 @@ def show_user(username):
     # select user from database
     user = User.query.filter_by(username = session['username']).first()
     # trim characters off user timezone
-    user_tz = user.employer_timezone.replace("'", '').replace('[','').replace(']','')
+    user_tz = (user.employer_timezone.replace("'", '').replace('(','').replace(')',''))
+    # if no timezone selected leave timezone as empty string
+    if len(user_tz) > 2:
+        user_tz = 'Employer Timezone: UTC '+(user.employer_timezone.replace("'", '').replace('(','').replace(')',''))
     # get all user cities
     user_cities = User_city.query.filter_by(user_id = user.id).all()
     # initialize cities visited
@@ -151,21 +153,11 @@ def edit_user(user_id):
         flash("Access Denied")
         return redirect('/')
     # get user from database
-    userData = User.query.get_or_404(user_id)
-    user_tz = user.employer_timezone.replace("'", '').replace('[','').replace(']','')
-    # update user timezone
-    
-    # FIX EDIT USER TIMEZONE FORM RENDER
-        # always renders choices[0]
-
-    user.employer_timezone = user_tz
-    print(user.employer_timezone, "****************")
+    user = User.query.get_or_404(user_id)
     # get edit form containing current user information
     form = EditUserForm(obj=user)
     if form.validate_on_submit():
-        # update data from form accordingly
-        user.first_name = form.first_name.data
-        user.last_name = form.last_name.data
+        # update data timezone
         user.employer_timezone = form.employer_timezone.data.replace("'", '').replace('(','').replace(')','')
         if User.authenticate(session['username'], form.password.data):
             db.session.commit()
@@ -182,25 +174,27 @@ def show_city(city):
     # Get City data from Teleport API
     try: 
         res = requests.get('https://api.teleport.org/api/cities/', params={'search': city, 'limit':1})
-        city_data = res.json()
-        city_name = city_data['_embedded']['city:search-results'][0]['matching_full_name']
-        # get the link the the cities data stored in other links 
-        city_link = city_data['_embedded']['city:search-results'][0]['_links']['city:item']['href'] 
-        city_scores_data =  requests.get(city_link)
-        city_information = city_scores_data.json()
-        city_short_name = city_information['name']
-        population = city_information['population']
-        # get the link to city scores data
-        city_urban_area = requests.get(city_information['_links']['city:urban_area']['href'])
-        city = city_urban_area.json()
+        city_urls = res.json()
+        # get url for city information urls and make request
+        city_details_urls =  requests.get(
+            city_urls['_embedded']['city:search-results'][0]['_links']['city:item']['href'])
+        city_detail_url = city_details_urls.json()
+        # get url to city score urls and make request with it
+        city_scores_url = requests.get(
+            city_detail_url['_links']['city:urban_area']['href'])
+        city_data = city_scores_url.json()
         # get actual data from city scores link 
-        city_scores = requests.get(city['_links']['ua:scores']['href'])
-        # get city images
-        city_images = requests.get(city['_links']['ua:images']['href'])
-        city_img = city_images.json()
+        city_scores = requests.get(city_data['_links']['ua:scores']['href'])
+        # get city image from images link 
+        city_photos = requests.get(city_data['_links']['ua:images']['href'])
+        city_img = city_photos.json()
         city_image = city_img['photos'][0]['image']['web']
+        city_name = city_detail_url['full_name']
+        city_short_name = city_detail_url['name']
+        population = city_detail_url['population']
+    
 
-        # get categories to display
+        # make category information accessible 
         city_final = city_scores.json()
         city_cats_data = city_final['categories']
         city_cats={}
@@ -219,36 +213,37 @@ def show_city(city):
         internet = city_cats['Internet Access']
         culture= city_cats['Leisure & Culture']
         environment = city_cats['Environmental Quality']
-
         summ = city_final['summary']
         # remove written in tags 
         summary = summ.replace('<p>', '').replace('<b>', '').replace('</b>', '').replace('</p>', '').replace('Teleport', '').replace('<i>', '').replace('</i>', '').replace('<br>', '').replace('</br>', '')
     
         # Get timezone and weather data using lat/lon information from teleport api 
-        city_lat = city_information['location']['latlon']['latitude']
-        city_lon = city_information['location']['latlon']['longitude']
-        data = requests.get(f'https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/{city_lat},{city_lon}?key=9Z9PX7J5C7ZRC76D38PL4WFL8')
-        json_data = data.json()
-        timezone = json_data['timezone']
-        tzoffset = json_data['tzoffset']
-        description = json_data['days'][0]['description']
-        temp = int(json_data['days'][0]['temp'])
+        city_lat = city_detail_url['location']['latlon']['latitude']
+        city_lon = city_detail_url['location']['latlon']['longitude']
+        tz_weather_data = requests.get(f'https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/{city_lat},{city_lon}?key=9Z9PX7J5C7ZRC76D38PL4WFL8')
+        data = tz_weather_data.json()
+        timezone = data['timezone']
+        tzoffset = data['tzoffset']
+        description = data['days'][0]['description']
+        temp = int(data['days'][0]['temp'])
         c_temp = int((temp-32)*5/9)
+        # get user timezone info
         user = User.query.filter_by(username = session['username']).first()
-        user_tz = user.employer_timezone.replace(':', '').replace('00', '')
-        time_dif = int(user_tz) - int(tzoffset)
+        # prep string to become int
+        user_tz = user.employer_timezone.replace(':','').replace('00','')
+        # calculate time difference 
+        time_dif = int(user_tz[:3]) - int(tzoffset)
 
         #Get Country data using the country the city is in from teleport api 
-        country = city_information['_links']['city:country']['name']
+        country = city_detail_url['_links']['city:country']['name']
         country_link = requests.get(f'https://countryinfoapi.com/api/countries/name/{country}')
         country_data = country_link.json()
-        language = country_data['languages']
-        languages = language.values()
-        driving = country_data['car']['side'].capitalize()
         currencies = country_data['currencies']
-        currency = str(currencies.keys()).replace("dict_keys(['", "").replace("'])", "")
+        currency = str(currencies.keys()).replace("dict_keys(['","").replace("'])","")
         final_currency = currencies[currency]['name']
         curr = final_currency
+        languages = country_data['languages'].values()
+        driving = country_data['car']['side'].capitalize()
         return render_template('city.html', housing=housing, cost=cost, 
                 startups=startups, v_capital=v_capital, travel=travel, 
                 commute=commute, saftey=safety, healthcare=healthcare, 
@@ -275,19 +270,22 @@ def save_city(city_short_name):
     # get city data from teleport api using the city's short name 
     res = requests.get('https://api.teleport.org/api/cities/', params={'search': city_short_name, 'limit':1})
     city_data = res.json()
-    city_link = city_data['_embedded']['city:search-results'][0]['_links']['city:item']['href'] 
-    city_scores_link =  requests.get(city_link)
-    city_information = city_scores_link.json()
+    city_scores_link =  requests.get(
+        city_data['_embedded']['city:search-results'][0]['_links']['city:item']['href'])
+    city_information_url = city_scores_link.json()
     # get city data from urban area link
-    city_urban_area = requests.get(city_information['_links']['city:urban_area']['href'])
-    city = city_urban_area.json()
+    city_urban_area_url = requests.get(city_information_url['_links']['city:urban_area']['href'])
+    city = city_urban_area_url.json()
+    # get city url and image 
     city_images = requests.get(city['_links']['ua:images']['href'])
     city_img = city_images.json()
     city_image = city_img['photos'][0]['image']['web']
+    # handle duplication 
     for c in user_cities:
         if c.city_name == city_short_name:
             flash("You've already saved this city!")
             return redirect(f'/user/{user.username}')
+    # add city to user_cities 
     add_city = User_city(city_name=city_short_name, city_image=city_image, user_id =user.id)
     db.session.add(add_city)
     db.session.commit()
@@ -305,7 +303,7 @@ def remove_u_city(city_id):
 
 @app.route('/city/<int:city_id>/visted', methods=["GET", "POST"])
 def mark_city_as_visited(city_id):
-    """remove city from user cities list and save the city as visited"""
+    """remove city from user not visited list and save the city as visited"""
     city = User_city.query.filter_by(id=city_id).first()
     user = session['username']
     city.visited = 1
@@ -315,7 +313,7 @@ def mark_city_as_visited(city_id):
 
 @app.route('/city/<int:city_id>/notvisited', methods=["GET", "POST"])
 def mark_city_as_not_visited(city_id):
-    """remove city from user cities list and save the city as visited"""
+    """remove city from user visited list and save the city as not visited"""
     city = User_city.query.filter_by(id=city_id).first()
     user = session['username']
     city.visited = 0

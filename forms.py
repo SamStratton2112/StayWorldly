@@ -19,8 +19,9 @@ class LoginForm(FlaskForm):
 
 class EditUserForm(FlaskForm):
     """Edit user details form"""
-    employer_timezone = SelectField('Employer Timezone(optional)', choices=[
-    (('-11:00', 'International Date Line West'), 'International Date Line West'),
+    employer_timezone = SelectField('Employer Timezone', choices=[
+        ((''), 'Select Timezone'),
+        (('-11:00', 'International Date Line West'), 'International Date Line West'),
  (('-10:00', 'Hawaii'), 'Hawaii'),
  (('-09:00', 'Alaska'), 'Alaska'),
  (('-08:00', 'Pacific Time'), 'Pacific Time'),
@@ -150,9 +151,6 @@ class EditUserForm(FlaskForm):
  (('+12:00', 'Nukualofa'), 'Nukualofa'),
  (('+12:00', 'Samoa'), 'Samoa'),
  (('+13:00', 'Tokelau Is.'), 'Tokelau Is.')])
-    
-    first_name = StringField('First Name', validators=[DataRequired()])
-    last_name = StringField('Last Name', validators=[DataRequired()])
     password = PasswordField('Password', validators=[Length(min=6)])
 
 class RegisterUserForm(FlaskForm):
@@ -161,7 +159,7 @@ class RegisterUserForm(FlaskForm):
     last_name = StringField('Last Name', validators=[DataRequired()])
     username = StringField('Username', validators=[DataRequired()])
     password = PasswordField('Password', validators=[Length(min=6)])
-    employer_timezone = SelectField('Employer Timezone(optional)', choices=[(('-11:00', 'International Date Line West'), 'International Date Line West'),
+    employer_timezone = SelectField('Employer Timezone', choices=[((''), 'Select Timezone'),(('-11:00', 'International Date Line West'), 'International Date Line West'),
  (('-10:00', 'Hawaii'), 'Hawaii'),
  (('-09:00', 'Alaska'), 'Alaska'),
  (('-08:00', 'Pacific Time'), 'Pacific Time'),

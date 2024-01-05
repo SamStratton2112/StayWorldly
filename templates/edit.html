@@ -10,7 +10,7 @@
     {% for msg in get_flashed_messages() %}
     <div class="alert">{{msg}}</div>
     {% endfor %}
-    <h1 class="sw m-5">Edit {{user.username}}</h1>
+    <h1 class="sw m-5">Edit {{user.username}}'s Timezone</h1>
     <!-- show all form fields except for hidden ones -->
     <form action="/user/{{user.id}}/edit" method="POST" id="user_form" class="text-white" >
         {{ form.hidden_tag() }}
