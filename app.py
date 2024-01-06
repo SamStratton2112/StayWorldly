@@ -51,7 +51,8 @@ def homepage():
             user_cities.insert(0, city)
     all_user_cities = random.sample(user_cities, 9)
     form = SearchForm()
-    if form.validate_on_submit():
+    try:
+        if form.validate_on_submit():
         # Ensure capitalized for API request
         city = request.form['city'].capitalize()
         # Get list of first 5 matching cities 
@@ -66,11 +67,21 @@ def homepage():
                 city['_links']['city:item']['href'])
                 )
         return render_template('home.html', form=form, cities=city_results, all_user_cities=all_user_cities)
+    except requests.RequestException as err:
+    # Handle exception related to requests library
+    handle_csrf_error(err)
+
+    except json.JSONDecodeError as err:
+    # Handle exception related to JSON decoding
+    handle_csrf_error(err)
+
+    except Exception as err:
+    # Catch any other unexpected exceptions
+    handle_csrf_error(err)
 # IF DATABASE IS EMPTY
 #  COMMENT OUT LINES 41-46 AND SUB 
 # (all_user_cities=all_user_cities) FOR (all_user_cities=all_cities) 
 # ON RETURN IN LINES 62 AND 66
-    handle_csrf_error()
     return render_template('home.html', form=form, all_user_cities=all_user_cities)
 
 @app.route('/register', methods=["GET", "POST"])
