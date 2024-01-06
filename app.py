@@ -7,6 +7,7 @@ import requests
 import random
 from sqlalchemy.exc import IntegrityError
 import os 
+import json
 
 
 app = Flask(__name__)
