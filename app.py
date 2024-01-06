@@ -52,33 +52,20 @@ def homepage():
             user_cities.insert(0, city)
     all_user_cities = random.sample(user_cities, 9)
     form = SearchForm()
-    try:
-        if form.validate_on_submit():
-            # Ensure capitalized for API request
-            city = request.form['city'].capitalize()
-            # Get list of first 5 matching cities 
-            res = requests.get('https://api.teleport.org/api/cities/', params={'search': city, 'limit':5})
-            city_data = res.json()
-            # initialize list of cities to return
-            city_results = []
-            for city in city_data['_embedded']['city:search-results']:
-                # add city name and image url to results list
-                city_results.append((
-                    city['matching_full_name'], 
-                    city['_links']['city:item']['href'])
-                    )
-        return render_template('home.html', form=form, cities=city_results, all_user_cities=all_user_cities)
-    except requests.RequestException as err:
-    # Handle exception related to requests library
-        handle_csrf_error(err)
-
-    except json.JSONDecodeError as err:
-    # Handle exception related to JSON decoding
-        handle_csrf_error(err)
-
-    except Exception as err:
-    # Catch any other unexpected exceptions
-        handle_csrf_error(err)
+    if form.validate_on_submit():
+        # Ensure capitalized for API request
+        city = request.form['city'].capitalize()
+        # Get list of first 5 matching cities 
+        res = requests.get('https://api.teleport.org/api/cities/', params={'search': city, 'limit':5})
+        city_data = res.json()
+        # initialize list of cities to return
+        city_results = []
+        for city in city_data['_embedded']['city:search-results']:
+            # add city name and image url to results list
+            city_results.append((
+                city['matching_full_name'], 
+                city['_links']['city:item']['href']))
+    return render_template('home.html', form=form, cities=city_results, all_user_cities=all_user_cities)
 # IF DATABASE IS EMPTY
 #  COMMENT OUT LINES 41-46 AND SUB 
 # (all_user_cities=all_user_cities) FOR (all_user_cities=all_cities) 
