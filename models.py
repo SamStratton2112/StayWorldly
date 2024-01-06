@@ -49,7 +49,7 @@ class User(db.Model):
         # check that the password is correct
         if bcrypt.check_password_hash(u.password, password):
             # set session[username] = u.username and load home page 
-            return u.username
+            return u
         else:
             # Throw Invalid credentials error 
             return False

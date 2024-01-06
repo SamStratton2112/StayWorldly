@@ -6,6 +6,7 @@
     <form method="POST" id="user_form" class="text-white" action="/login">
       {{ form.errors }}
       <!-- show all fields in form expect for hidden ones -->
+      {{ form.csrf_token }}
       {{ form.hidden_tag() }}
 
       {% for field in form if field.widget.input_type != 'hidden' %}
