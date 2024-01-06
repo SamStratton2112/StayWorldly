@@ -53,19 +53,19 @@ def homepage():
     form = SearchForm()
     try:
         if form.validate_on_submit():
-        # Ensure capitalized for API request
-        city = request.form['city'].capitalize()
-        # Get list of first 5 matching cities 
-        res = requests.get('https://api.teleport.org/api/cities/', params={'search': city, 'limit':5})
-        city_data = res.json()
-        # initialize list of cities to return
-        city_results = []
-        for city in city_data['_embedded']['city:search-results']:
-            # add city name and image url to results list
-            city_results.append((
-                city['matching_full_name'], 
-                city['_links']['city:item']['href'])
-                )
+            # Ensure capitalized for API request
+            city = request.form['city'].capitalize()
+            # Get list of first 5 matching cities 
+            res = requests.get('https://api.teleport.org/api/cities/', params={'search': city, 'limit':5})
+            city_data = res.json()
+            # initialize list of cities to return
+            city_results = []
+            for city in city_data['_embedded']['city:search-results']:
+                # add city name and image url to results list
+                city_results.append((
+                    city['matching_full_name'], 
+                    city['_links']['city:item']['href'])
+                    )
         return render_template('home.html', form=form, cities=city_results, all_user_cities=all_user_cities)
     except requests.RequestException as err:
     # Handle exception related to requests library
