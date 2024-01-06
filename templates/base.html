@@ -16,6 +16,7 @@
 </head>
 <body>
     <!-- set navbar -->
+        {{session}}
     <nav class="navbar navbar-expand-md navbar-dark bg-black"> 
         <div class="container-fluid">
         <a class="navbar-brand sw ps-3" href="/">Stay Worldly</a>
@@ -28,12 +29,12 @@
                     <!-- determine which buttons to show based on session[username] -->
                     {% if 'username' not in session %}
                     <li class="nav-item">
-                        <form class="nav-link text-en" action="/register">
+                        <form class="nav-link text-end" action="/register">
                             <button type="submit" class="btn text-white" method="GET">Register</button>
                         </form>
                     </li>
                     <li class="nav-item">
-                        <form class="nav-link text-white text-end" action="/login">
+                        <form class="nav-link text-end" action="/login">
                             <button type="submit" class="btn text-white" method="GET">Log in</button>
                         </form>
                     </li>
