@@ -1,4 +1,5 @@
 from flask import Flask, request, render_template, redirect, session, flash
+from flask_wtf.csrf import CSRFProtect
 from models import db, connect_db, User, User_city
 from forms import LoginForm, RegisterUserForm, EditUserForm, SearchForm
 import sqlalchemy
@@ -7,7 +8,9 @@ import random
 from sqlalchemy.exc import IntegrityError
 import os 
 
+
 app = Flask(__name__)
+csrf = CSRFProtect(app)
 
 # database for localhost
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///travel'
@@ -17,11 +20,14 @@ app.config["SQLALCHEMY_ECHO"] = True
 # SECRET_KEY for localhost
 # app.config['SECRET_KEY'] = 'secret'
 app.config['SECRET_KEY'] = os.environ['SECRET_KEY']
+app.config['WTF_CSRF_SECRET_KEY'] = os.environ['SECRET_KEY']
 
 app.app_context().push()
 
 # use imported function to connect app to database
 connect_db(app)
+def handle_csrf_error(e):
+    print(e.description)
 
 @app.route('/', methods=["GET", "POST"])
 def homepage():
@@ -64,6 +70,7 @@ def homepage():
 #  COMMENT OUT LINES 41-46 AND SUB 
 # (all_user_cities=all_user_cities) FOR (all_user_cities=all_cities) 
 # ON RETURN IN LINES 62 AND 66
+    handle_csrf_error()
     return render_template('home.html', form=form, all_user_cities=all_user_cities)
 
 @app.route('/register', methods=["GET", "POST"])
