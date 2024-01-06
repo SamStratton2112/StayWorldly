@@ -4,10 +4,10 @@
 <div class="text-center">
     <h2 class="m-5 text-white sw h1">Welcome back to Stay Worldly</h2>
     <form method="POST" id="user_form" class="text-white" action="/login">
+      <span><!-- test -->
+        {{ form.errors }}</span>
       <!-- show all fields in form expect for hidden ones -->
       {{ form.hidden_tag() }}
-      <!-- test -->
-      {{ form.errors }}
 
       {% for field in form if field.widget.input_type != 'hidden' %}
         {% for error in field.errors %}
