@@ -69,15 +69,15 @@ def homepage():
         return render_template('home.html', form=form, cities=city_results, all_user_cities=all_user_cities)
     except requests.RequestException as err:
     # Handle exception related to requests library
-    handle_csrf_error(err)
+        handle_csrf_error(err)
 
     except json.JSONDecodeError as err:
     # Handle exception related to JSON decoding
-    handle_csrf_error(err)
+        handle_csrf_error(err)
 
     except Exception as err:
     # Catch any other unexpected exceptions
-    handle_csrf_error(err)
+        handle_csrf_error(err)
 # IF DATABASE IS EMPTY
 #  COMMENT OUT LINES 41-46 AND SUB 
 # (all_user_cities=all_user_cities) FOR (all_user_cities=all_cities) 
