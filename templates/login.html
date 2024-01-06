@@ -6,7 +6,7 @@
     <form method="POST" id="user_form" class="text-white" action="/login">
       <span><!-- test -->
         {{ form.errors }}</span>
-        {{ form.csrf_token }}
+      <span>{{ form.csrf_token }}</span>
       <!-- show all fields in form expect for hidden ones -->
       {{ form.hidden_tag() }}
 

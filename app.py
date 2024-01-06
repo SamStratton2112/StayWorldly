@@ -7,11 +7,11 @@ import requests
 import random
 from sqlalchemy.exc import IntegrityError
 import os 
-import json
+
 
 
 app = Flask(__name__)
-csrf = CSRFProtect(app)
+# csrf = CSRFProtect(app)
 
 # database for localhost
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///travel'
@@ -27,8 +27,8 @@ app.app_context().push()
 
 # use imported function to connect app to database
 connect_db(app)
-def handle_csrf_error(e):
-    print(e.description)
+# def handle_csrf_error(e):
+#     return render_template('csrf_error.html', reason=e.description), 400
 
 @app.route('/', methods=["GET", "POST"])
 def homepage():
