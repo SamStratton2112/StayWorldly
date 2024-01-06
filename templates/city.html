@@ -43,18 +43,18 @@
                 </ul> 
                 <li class="m-2">Housing: {{housing}}/10</li>
                 <ul class="list-unstyled text-white h5 text-start">
-                    {% if housing <= 6 %}
+                    {% if housing <= 4 %}
                     <li class="m-2">- Housing may be one of your main expenses.</li>
                     {% else %}
-                    <li>- This city has affordable housing.</li>
+                    <li>- This city has affordable housing available.</li>
                     {% endif %}
                 </ul>
                 <li class="m-2">Cost of Living: {{cost}}/10</li>
                 <ul class="list-unstyled text-white h5 text-start">
-                    {% if cost <= 5 %}
+                    {% if cost <= 4 %}
                     <li class="m-2">- Daily expenses and bills may add up quickly.</li>
                     {% else %}
-                    <li class="m-2">- This city has relatively affordable bills and daily expenses should be minimal.</li>
+                    <li class="m-2">- This city has relatively affordable bills and daily expenses should be manageable.</li>
                     {% endif %}
                 </ul> 
                 <li class="m-2">Commute: {{commute}}/10</li>
@@ -67,8 +67,8 @@
                 </ul> 
                 <li class="m-2">Healthcare: {{healthcare}}/10</li>
                 <ul class="list-unstyled text-white h5 text-start">
-                    {% if healthcare <= 6 %}
-                    <li class="m-2">- Healthcare may be difficult to access but certainly not impossible.</li>
+                    {% if healthcare <= 4 %}
+                    <li class="m-2">- Healthcare may be hard to access.</li>
                     {% else %}
                     <li class="m-2">- Healthcare is highly accessible.</li>
                     {% endif %}
@@ -76,9 +76,9 @@
                 <li class="m-2">Internet: {{internet}}/10</li>
                 <ul class="list-unstyled text-white h5 text-start">
                     {% if internet <= 4 %}
-                    <li class="m-2">- Internet connection may not be very reliable.</li>
+                    <li class="m-2">- Internet access may be limited.</li>
                     {% else %}
-                    <li class="m-2">- Internet connection is very reliable.</li>
+                    <li class="m-2">- Internet access should be very reliable.</li>
                     {% endif %}
                 </ul> 
                 <li class="m-2">Culture: {{culture}}/10</li>
@@ -86,7 +86,7 @@
                     {% if culture <= 5 %}
                     <li class="m-2">- Culture is not at the forefront of this city but don't forget about hidden gems!</li>
                     {% else %}
-                    <li class="m-2">- Culture is thriving here! You'll meet people from several walks of life. Cultural institutions are plentiful.</li>
+                    <li class="m-2">- Culture is thriving here! You'll meet people from several walks of life and cultural institutions/events are plentiful.</li>
                     {% endif %}
                 </ul>          
                 <li class="m-2">Driving side: {{driving}}</li>
@@ -99,9 +99,10 @@
                 <li class="m-2 text-start">Travel: {{travel}}/10</li>
                 <ul class="list-unstyled text-white h4 text-start">
                     {% if travel < 5 %}
-                    <li class="m-2">- Airports are accessible but you may have several connecting flights when traveling to and from this city. </p>
+                    <li class="m-2">- Airports are accessible but getting there may be a journey in itself. Hopefully, depending on your destination, connecting flights won't be excessive.
+                    </li>
                     {% else %}
-                    <li class="m-2">- Airports are accessible and, depending on your destination, connecting flights shouldn't be excessive.</p>
+                    <li class="m-2">- Airports are easily accessible. Depending on your destination, connecting flights shouldn't be excessive.</p>
                     {% endif %}
                 </ul> 
             </ul>
@@ -109,7 +110,7 @@
             <ul class="list-unstyled text-white m-3 h4 text-start mb-5">
                 <li>Economy: {{economy}}/10</li>
                 <ul class="list-unstyled text-white h4 text-start mb-4">
-                    {% if economy <= 5 %}
+                    {% if economy <= 4 %}
                     <li class="m-2">- Economies fluctuate. Your income, depending on the original currency, may go farther here than you might expect.</li>
                     {% else %}
                     <li class="m-2">- Economies fluctuate. Your income, depending on the original currency, may not go as far here as you might expect.</li>
@@ -117,7 +118,7 @@
                 </ul> 
                 <li class="pt-2">Taxes: {{tax}}/10</li>
                 <ul class="list-unstyled text-white h4 text-start">
-                    {% if tax <= 5 %}
+                    {% if tax <= 4 %}
                     <li class="m-2">- Taxes may be high.</li>
                     {% else %}
                     <li class="m-2">- Taxes should be manageable.</li>
@@ -129,17 +130,17 @@
                 <li>Startup Friendly Environment: {{startups}}/10</li>
                 <ul class="list-unstyled text-white h4 text-start">
                     {% if startups < 5 %}
-                    <li class="m-2">- This may not be the best city for a startup.</li>
+                    <li class="m-2">- There aren't many start ups here. This may not be the best city for a startup but local competition will be low.</li>
                     {% else %}
-                    <li class="m-2">- This can be a great city for a startup.</li>
+                    <li class="m-2">- There are several startups here! This can be a great city for a startup but competition may be high.</li>
                     {% endif %}
                 </ul> 
                 <li class="pt-4">Venture Capital: {{v_capital}}/10</li>
                 <ul class="list-unstyled text-white h4 text-start">
-                    {% if v_capital < 6 %}
-                    <li class="m-2">- There may not be many venture capital opportunities.</li>
+                    {% if v_capital < 5 %}
+                    <li class="m-2">- There may not be many venture capital opportunities in this city.</li>
                     {% else %}
-                    <li class="m-2">- There may be plenty of Venture Capital opportunities.</li>
+                    <li class="m-2">- There may be plenty of Venture Capital opportunities in this city.</li>
                     {% endif %}
                 </ul> 
             </ul>

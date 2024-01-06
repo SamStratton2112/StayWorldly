@@ -6,6 +6,8 @@
     <form method="POST" id="user_form" class="text-white" action="/login">
       <!-- show all fields in form expect for hidden ones -->
       {{ form.hidden_tag() }}
+      <!-- test -->
+      {{ form.errors }}
 
       {% for field in form if field.widget.input_type != 'hidden' %}
         {% for error in field.errors %}
