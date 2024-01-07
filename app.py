@@ -12,13 +12,13 @@ from flask_wtf.csrf import CSRFProtect
 
 app = Flask(__name__)
 # database for localhost
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///travel'
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///travel'
+# app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config["SQLALCHEMY_ECHO"] = True
 # SECRET_KEY for localhost
-# app.config['SECRET_KEY'] = 'secret'
-app.config['SECRET_KEY'] = os.environ['SECRET_KEY']
+app.config['SECRET_KEY'] = 'secret'
+# app.config['SECRET_KEY'] = os.environ['SECRET_KEY']
 app.logger.setLevel(logging.DEBUG)
 
 # when this is active then I get Bad Request The CSRF token is missing whenn logging out. Otherwise, no errors
@@ -259,7 +259,11 @@ def show_city(city):
         # prep string to become int
         user_tz = user.employer_timezone.replace(':','').replace('00','')
         # calculate time difference 
+        
+        # added
+        print(user_tz)
         time_dif = int(user_tz[:3]) - int(tzoffset)
+        print(time_dif)
 
         #Get Country data using the country the city is in from teleport api 
         country = city_detail_url['_links']['city:country']['name']
