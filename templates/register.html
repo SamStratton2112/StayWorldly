@@ -6,6 +6,7 @@
     <form method="POST" id="user_form" class="text-white h2" action="/register">
       <!-- show all fields in form expect for hidden ones -->
       {{ form.hidden_tag() }}
+      <!-- remove this to get rid pf {} in login -->
       {{ form.errors }}
 
 
