@@ -7,19 +7,25 @@ import random
 from sqlalchemy.exc import IntegrityError
 import os 
 import logging
+from flask_wtf.csrf import CSRFProtect
+
 
 app = Flask(__name__)
 # database for localhost
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///travel'
-# app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///travel'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config["SQLALCHEMY_ECHO"] = True
 # SECRET_KEY for localhost
-app.config['SECRET_KEY'] = 'secret'
-# app.config['SECRET_KEY'] = os.environ['SECRET_KEY']
+# app.config['SECRET_KEY'] = 'secret'
+app.config['SECRET_KEY'] = os.environ['SECRET_KEY']
 app.logger.setLevel(logging.DEBUG)
 
-app.app_context().push()
+# when this is active then I get Bad Request The CSRF token is missing whenn logging out. Otherwise, no errors
+# csrf = CSRFProtect(app)
+
+# app behaves the same if this is active or not 
+# app.app_context().push()
 
 # use imported function to connect app to database
 connect_db(app)
@@ -56,6 +62,7 @@ def homepage():
         res = requests.get('https://api.teleport.org/api/cities/', params={'search': city, 'limit':5})
         city_data = res.json()
         app.logger.debug(f'Form CSRF Token: {form.csrf_token.data}')
+        # likely different because the CSRF token stored in the session is being regenerated on each request
         app.logger.debug(f'Session CSRF Token: {session["csrf_token"]}')
         app.logger.debug(f'Session Data: {session}')
         for city in city_data['_embedded']['city:search-results']:
@@ -94,7 +101,7 @@ def register_user():
             # add user to datadae
             db.session.add(user)
             db.session.commit() 
-            # set session[username] indicating that a user is logged in
+            # set session['username'] indicating that a user is logged in
             session['username']= user.username
             return redirect('/')
         except IntegrityError:
@@ -106,16 +113,20 @@ def register_user():
 @app.route('/login', methods=["GET", "POST"])
 def do_login():
     """ handle user log in"""
+    app.logger.debug(f'Session Data: {session}')
     form=LoginForm()
     if form.validate_on_submit():
         # validate_csrf(form.csrf_token.data, secret_key=app.secret_key)
         user = User.authenticate(form.username.data, form.password.data)
+        app.logger.debug(f'Form CSRF Token: {form.csrf_token.data}')
+        app.logger.debug(f'Session CSRF Token: {session["csrf_token"]}')
+        app.logger.debug(f'Session Data: {session}')
+        
         if user:
             # User.authenticate() will return the username of the authenticated user
             # if user is authenticated set session[username] indicating login 
             session['username']= user
             return redirect('/')
-                                                                        # stopped here
             # handle incorred credentials 
         flash('Incorrect Username or Password!')
         return render_template('login.html', form=form)
@@ -125,7 +136,9 @@ def do_login():
 def logout():
     """handle user logout"""
     # clear the session to indicate log out
-    session.clear()
+    session.pop('username')
+    app.logger.debug(f'Session Data: {session}')
+
     return redirect('/')
 
 @app.route('/user/<username>', methods=["GET", "POST"])
