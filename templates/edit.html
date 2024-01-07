@@ -9,7 +9,6 @@
 <div class="text-center">
     <h1 class="sw m-5">Edit {{user.username}}'s Timezone</h1>
     <!-- show all form fields except for hidden ones -->
-    <div>{{ form.csrf_token }}</div>
     <form action="/user/{{user.id}}/edit" method="POST" id="user_form" class="text-white" >
         {{ form.hidden_tag() }}
 
