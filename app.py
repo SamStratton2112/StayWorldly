@@ -25,7 +25,7 @@ app.logger.setLevel(logging.DEBUG)
 # csrf = CSRFProtect(app)
 
 # app behaves the same if this is active or not 
-# app.app_context().push()
+app.app_context().push()
 
 # use imported function to connect app to database
 connect_db(app)
