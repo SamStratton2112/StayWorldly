@@ -6,20 +6,18 @@ import requests
 import random
 from sqlalchemy.exc import IntegrityError
 import os 
-
-
+import logging
 
 app = Flask(__name__)
-
 # database for localhost
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///travel'
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///travel'
+# app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config["SQLALCHEMY_ECHO"] = True
 # SECRET_KEY for localhost
-# app.config['SECRET_KEY'] = 'secret'
-app.config['SECRET_KEY'] = os.environ['SECRET_KEY']
-app.config['WTF_CSRF_ENABLED'] = True
+app.config['SECRET_KEY'] = 'secret'
+# app.config['SECRET_KEY'] = os.environ['SECRET_KEY']
+app.logger.setLevel(logging.DEBUG)
 
 app.app_context().push()
 
@@ -38,13 +36,13 @@ def homepage():
         - form to search for cities"""
 
     # initial cities list with duplication 
-    print(session, '*****************************')
     all_cities = User_city.query.all()
     # initialize list used to render cities without duplication
     all_user_cities = []
     user_cities = []
     # initialize list of cities to return
     city_results = []
+    app.logger.debug(f'Session Data: {session}')
     for city in all_cities:
         if city.city_name not in all_user_cities:
             all_user_cities.append(city.city_name)
@@ -57,12 +55,15 @@ def homepage():
         # Get list of first 5 matching cities 
         res = requests.get('https://api.teleport.org/api/cities/', params={'search': city, 'limit':5})
         city_data = res.json()
+        app.logger.debug(f'Form CSRF Token: {form.csrf_token.data}')
+        app.logger.debug(f'Session CSRF Token: {session["csrf_token"]}')
+        app.logger.debug(f'Session Data: {session}')
         for city in city_data['_embedded']['city:search-results']:
             # add city name and image url to results list
             city_results.append((
                 city['matching_full_name'], 
                 city['_links']['city:item']['href']))
-    return render_template('home.html', form=form, cities=city_results, all_user_cities=all_user_cities)
+        return render_template('home.html', form=form, cities=city_results, all_user_cities=all_user_cities)
 # IF DATABASE IS EMPTY
 #  COMMENT OUT LINES 41-46 AND SUB 
 # (all_user_cities=all_user_cities) FOR (all_user_cities=all_cities) 
@@ -75,7 +76,6 @@ def register_user():
     - Create a new user and add to db. Redirect to homepage with new user logged in.
     - If form not valid, redirect back to form.
     - If username is unavailable flash message and redirect back to form"""
-    print(session, '*****************************')
     form = RegisterUserForm()
     if form.validate_on_submit():
         try:
@@ -106,15 +106,16 @@ def register_user():
 @app.route('/login', methods=["GET", "POST"])
 def do_login():
     """ handle user log in"""
-    print(session, '*****************************')
     form=LoginForm()
     if form.validate_on_submit():
+        # validate_csrf(form.csrf_token.data, secret_key=app.secret_key)
         user = User.authenticate(form.username.data, form.password.data)
         if user:
             # User.authenticate() will return the username of the authenticated user
             # if user is authenticated set session[username] indicating login 
-            session['username']= form.username.data
+            session['username']= user
             return redirect('/')
+                                                                        # stopped here
             # handle incorred credentials 
         flash('Incorrect Username or Password!')
         return render_template('login.html', form=form)
@@ -122,7 +123,6 @@ def do_login():
 
 @app.route('/logout', methods=["POST"])
 def logout():
-    print(session, '*****************************')
     """handle user logout"""
     # clear the session to indicate log out
     session.clear()
@@ -132,7 +132,6 @@ def logout():
 def show_user(username):
     """show user page"""
     # handle no logged in user
-    print(session, '*****************************')
     if 'username' not in session:
         flash("Access Denied")
         return redirect('/')
@@ -160,7 +159,6 @@ def show_user(username):
 @app.route('/user/<int:user_id>/edit', methods=["GET", "POST"])
 def edit_user(user_id):
     """edit user details"""
-    print(session, '*****************************')
     if 'username' not in session:
         flash("Access Denied")
         return redirect('/')
@@ -170,7 +168,6 @@ def edit_user(user_id):
     form = EditUserForm(obj=user)
     if form.validate_on_submit():
         # update data timezone
-        print('------ {0}'.format(request.form))
         user.employer_timezone = form.employer_timezone.data.replace("'", '').replace('(','').replace(')','')
         # handle invalid timezone
         if user.employer_timezone == '' :
@@ -189,7 +186,6 @@ def show_city(city):
     """Get all relevant information about a city"""
 
     # Get City data from Teleport API
-    print(session, '*****************************')
     try: 
         res = requests.get('https://api.teleport.org/api/cities/', params={'search': city, 'limit':1})
         city_urls = res.json()
@@ -282,7 +278,6 @@ def show_city(city):
 
 @app.route('/save/<city_short_name>', methods=["GET", "POST"])
 def save_city(city_short_name):
-    print(session, '*****************************')
     """Save a city to user's page while avoiding duplication"""
     user = User.query.filter_by(username = session['username']).first()
     user_cities = User_city.query.filter_by(user_id = user.id).all()
@@ -314,7 +309,6 @@ def save_city(city_short_name):
 @app.route('/remove/<city_id>', methods=["GET", "POST"])
 def remove_u_city(city_id):
     """Remove a city from a user's page"""
-    print(session, '*****************************')
     city = User_city.query.filter_by(id=city_id).first()
     user = session['username']
     db.session.delete(city)
@@ -324,7 +318,6 @@ def remove_u_city(city_id):
 @app.route('/city/<int:city_id>/visted', methods=["GET", "POST"])
 def mark_city_as_visited(city_id):
     """remove city from user not visited list and save the city as visited"""
-    print(session, '*****************************')
     city = User_city.query.filter_by(id=city_id).first()
     user = session['username']
     city.visited = 1
@@ -335,15 +328,9 @@ def mark_city_as_visited(city_id):
 @app.route('/city/<int:city_id>/notvisited', methods=["GET", "POST"])
 def mark_city_as_not_visited(city_id):
     """remove city from user visited list and save the city as not visited"""
-    print(session, '*****************************')
     city = User_city.query.filter_by(id=city_id).first()
     user = session['username']
     city.visited = 0
     db.session.add(city)
     db.session.commit()
     return redirect(f'/user/{user}') 
-
-
-#  ISSUE: 
-#  - wtforms and flask are usynchronized 
-#  - flask sets csrf_token in session and upon log in, then wtforms sets a new csrf_token but the session is not updating for some reason. look into what form.hiddn() actually does 

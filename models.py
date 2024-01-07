@@ -1,16 +1,13 @@
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
-from flask_wtf import CSRFProtect
 
 db = SQLAlchemy()
 bcrypt = Bcrypt()
-csrf = CSRFProtect()
 
 def connect_db(app):
     """function to connect to db"""
     db.app=app
     db.init_app(app)
-    csrf.init_app(app)
 
 class User(db.Model):
     """"User model"""
@@ -49,7 +46,7 @@ class User(db.Model):
         # check that the password is correct
         if bcrypt.check_password_hash(u.password, password):
             # set session[username] = u.username and load home page 
-            return u
+            return u.username
         else:
             # Throw Invalid credentials error 
             return False

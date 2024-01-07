@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SelectField, SubmitField
+from wtforms import StringField, PasswordField, SelectField
 from wtforms.validators import DataRequired, Length
 
 class SearchForm(FlaskForm):
@@ -9,7 +9,7 @@ class SearchForm(FlaskForm):
 class LoginForm(FlaskForm):
     """Login form."""
     username = StringField('Username', validators=[DataRequired()])
-    password = PasswordField('Password', validators=[Length(min=6)])
+    password = PasswordField('Password', validators=[Length(min=6, max=50)])
 
 class EditUserForm(FlaskForm):
     """Edit user details form"""
@@ -152,7 +152,7 @@ class RegisterUserForm(FlaskForm):
     first_name = StringField('First Name', validators=[DataRequired()])
     last_name = StringField('Last Name', validators=[DataRequired()])
     username = StringField('Username', validators=[DataRequired()])
-    password = PasswordField('Password', validators=[Length(min=6)])
+    password = PasswordField('Password', validators=[Length(min=6, max=50)])
     employer_timezone = SelectField('Employer Timezone',validators=[DataRequired()], choices=[((''), 'Select Timezone'),(('-11:00', 'International Date Line West'), 'International Date Line West'),
  (('-10:00', 'Hawaii'), 'Hawaii'),
  (('-09:00', 'Alaska'), 'Alaska'),
