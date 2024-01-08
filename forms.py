@@ -10,6 +10,7 @@ class LoginForm(FlaskForm):
     """Login form."""
     username = StringField('Username', validators=[DataRequired()])
     password = PasswordField('Password', validators=[Length(min=6, max=50)])
+    submit = SubmitField('Submit')
 
 class EditUserForm(FlaskForm):
     """Edit user details form"""
@@ -146,11 +147,10 @@ class EditUserForm(FlaskForm):
  (('+12:00', 'Samoa'), 'Samoa'),
  (('+13:00', 'Tokelau Is.'), 'Tokelau Is.')])
     password = PasswordField('Password', validators=[Length(min=6)])
-    submit = SubmitField('Submit')
+    
 
 class RegisterUserForm(FlaskForm):
     """Register a new user"""
-    submit = SubmitField('Submit')
     first_name = StringField('First Name', validators=[DataRequired()])
     last_name = StringField('Last Name', validators=[DataRequired()])
     username = StringField('Username', validators=[DataRequired()])
@@ -285,4 +285,6 @@ class RegisterUserForm(FlaskForm):
  (('+12:00', 'Nukualofa'), 'Nukualofa'),
  (('+12:00', 'Samoa'), 'Samoa'),
  (('+13:00', 'Tokelau Is.'), 'Tokelau Is.')])
+    submit = SubmitField('Submit')
+    
     
