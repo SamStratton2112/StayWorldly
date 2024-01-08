@@ -116,7 +116,7 @@ def do_login():
     app.logger.debug(f'Session Data: {session}')
     form=LoginForm()
     if form.validate_on_submit():
-        csrf.generate_csrf()
+        # csrf.generate_csrf()
         # validate_csrf(form.csrf_token.data, secret_key=app.secret_key)
         user = User.authenticate(form.username.data, form.password.data)
         app.logger.debug(f'Form CSRF Token: {form.csrf_token.data}')
