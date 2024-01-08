@@ -20,7 +20,7 @@ app.config["SQLALCHEMY_ECHO"] = True
 # SECRET_KEY for localhost
 # app.config['SECRET_KEY'] = 'secret'
 app.config['SECRET_KEY'] = os.environ['SECRET_KEY']
-app.logger.setLevel(logging.DEBUG)
+app.logger.setLevel(logging.DEBUG) 
 
 # when this is active then I get Bad Request The CSRF token is missing whenn logging out. Otherwise, no errors
 # csrf = CSRFProtect(app)
