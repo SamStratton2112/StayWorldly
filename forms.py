@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SelectField
+from wtforms import StringField, PasswordField, SelectField, SubmitField
 from wtforms.validators import DataRequired, Length
 
 class SearchForm(FlaskForm):
@@ -149,6 +149,7 @@ class EditUserForm(FlaskForm):
 
 class RegisterUserForm(FlaskForm):
     """Register a new user"""
+    submit = SubmitField('Submit')
     first_name = StringField('First Name', validators=[DataRequired()])
     last_name = StringField('Last Name', validators=[DataRequired()])
     username = StringField('Username', validators=[DataRequired()])
@@ -283,3 +284,4 @@ class RegisterUserForm(FlaskForm):
  (('+12:00', 'Nukualofa'), 'Nukualofa'),
  (('+12:00', 'Samoa'), 'Samoa'),
  (('+13:00', 'Tokelau Is.'), 'Tokelau Is.')])
+    

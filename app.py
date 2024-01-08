@@ -8,23 +8,23 @@ from sqlalchemy.exc import IntegrityError
 import os 
 import logging
 from flask_wtf.csrf import CSRFProtect
+from flask_wtf import csrf
 
 
 app = Flask(__name__)
 # database for localhost
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///travel'
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///travel'
+# app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config["SQLALCHEMY_ECHO"] = True
 # SECRET_KEY for localhost
-# app.config['SECRET_KEY'] = 'secret'
-app.config['SECRET_KEY'] = os.environ['SECRET_KEY']
+app.config['SECRET_KEY'] = 'secret'
+# app.config['SECRET_KEY'] = os.environ['SECRET_KEY']
 app.logger.setLevel(logging.DEBUG)
 
 # when this is active then I get Bad Request The CSRF token is missing whenn logging out. Otherwise, no errors
 # csrf = CSRFProtect(app)
 
-# app behaves the same if this is active or not 
 app.app_context().push()
 
 # use imported function to connect app to database
@@ -116,6 +116,7 @@ def do_login():
     app.logger.debug(f'Session Data: {session}')
     form=LoginForm()
     if form.validate_on_submit():
+        csrf.generate_csrf()
         # validate_csrf(form.csrf_token.data, secret_key=app.secret_key)
         user = User.authenticate(form.username.data, form.password.data)
         app.logger.debug(f'Form CSRF Token: {form.csrf_token.data}')
@@ -127,7 +128,7 @@ def do_login():
             # if user is authenticated set session[username] indicating login 
             session['username']= user
             return redirect('/')
-            # handle incorred credentials 
+            # handle incorrect credentials 
         flash('Incorrect Username or Password!')
         return render_template('login.html', form=form)
     return render_template('login.html', form=form)
