@@ -146,6 +146,7 @@ class EditUserForm(FlaskForm):
  (('+12:00', 'Samoa'), 'Samoa'),
  (('+13:00', 'Tokelau Is.'), 'Tokelau Is.')])
     password = PasswordField('Password', validators=[Length(min=6)])
+    submit = SubmitField('Submit')
 
 class RegisterUserForm(FlaskForm):
     """Register a new user"""
