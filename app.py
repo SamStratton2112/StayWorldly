@@ -6,12 +6,10 @@ import requests
 import random
 from sqlalchemy.exc import IntegrityError
 import os 
-import logging
-from flask_wtf.csrf import CSRFProtect
-from flask_wtf import csrf
 
 
 app = Flask(__name__)
+
 # database for localhost
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///travel'
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
@@ -20,15 +18,9 @@ app.config["SQLALCHEMY_ECHO"] = True
 # SECRET_KEY for localhost
 # app.config['SECRET_KEY'] = 'secret'
 app.config['SECRET_KEY'] = os.environ['SECRET_KEY']
-app.logger.setLevel(logging.DEBUG) 
 
-# when this is active then I get Bad Request The CSRF token is missing whenn logging out. Otherwise, no errors
-# csrf = CSRFProtect(app)
-
-app.app_context().push()
-
-# use imported function to connect app to database
-connect_db(app)
+with app.app_context():
+    connect_db(app)
 
 @app.route('/', methods=["GET", "POST"]) 
 def homepage():
@@ -45,15 +37,18 @@ def homepage():
     all_cities = User_city.query.all()
     # initialize list used to render cities without duplication
     all_user_cities = []
+    # add city object if city is not in all_user_cities
     user_cities = []
     # initialize list of cities to return
     city_results = []
-    app.logger.debug(f'Session Data: {session}')
     for city in all_cities:
         if city.city_name not in all_user_cities:
             all_user_cities.append(city.city_name)
             user_cities.insert(0, city)
-    all_user_cities = random.sample(user_cities, 9)
+    # get random set of 9 cities
+    all_user_cities = random.sample(user_cities,9)
+    # IF DATABASE IS EMPTY COMMENT OUT LINE 49 AND COMMENT IN LINE 51 UNTIL 9 CITIES HAVE BEEN SAVED 
+    # all_user_cities = random.choice(user_cities)
     form = SearchForm()
     if form.validate_on_submit():
         # Ensure capitalized for API request
@@ -61,20 +56,12 @@ def homepage():
         # Get list of first 5 matching cities 
         res = requests.get('https://api.teleport.org/api/cities/', params={'search': city, 'limit':5})
         city_data = res.json()
-        app.logger.debug(f'Form CSRF Token: {form.csrf_token.data}')
-        # likely different because the CSRF token stored in the session is being regenerated on each request
-        app.logger.debug(f'Session CSRF Token: {session["csrf_token"]}')
-        app.logger.debug(f'Session Data: {session}')
         for city in city_data['_embedded']['city:search-results']:
             # add city name and image url to results list
             city_results.append((
                 city['matching_full_name'], 
                 city['_links']['city:item']['href']))
         return render_template('home.html', form=form, cities=city_results, all_user_cities=all_user_cities)
-# IF DATABASE IS EMPTY
-#  COMMENT OUT LINES 41-46 AND SUB 
-# (all_user_cities=all_user_cities) FOR (all_user_cities=all_cities) 
-# ON RETURN IN LINES 62 AND 66
     return render_template('home.html', form=form, all_user_cities=all_user_cities)
 
 @app.route('/register', methods=["GET", "POST"])
@@ -113,16 +100,9 @@ def register_user():
 @app.route('/login', methods=["GET", "POST"])
 def do_login():
     """ handle user log in"""
-    app.logger.debug(f'Session Data: {session}')
     form=LoginForm()
-    if form.validate_on_submit():
-        # csrf.generate_csrf()
-        # validate_csrf(form.csrf_token.data, secret_key=app.secret_key)
+    if form.validate_on_submit(): 
         user = User.authenticate(form.username.data, form.password.data)
-        app.logger.debug(f'Form CSRF Token: {form.csrf_token.data}')
-        app.logger.debug(f'Session CSRF Token: {session["csrf_token"]}')
-        app.logger.debug(f'Session Data: {session}')
-        
         if user:
             # User.authenticate() will return the username of the authenticated user
             # if user is authenticated set session[username] indicating login 
@@ -138,7 +118,6 @@ def logout():
     """handle user logout"""
     # clear the session to indicate log out
     session.pop('username')
-    app.logger.debug(f'Session Data: {session}')
 
     return redirect('/')
 
@@ -258,13 +237,11 @@ def show_city(city):
         # get user timezone info
         user = User.query.filter_by(username = session['username']).first()
         # prep string to become int
-        user_tz = user.employer_timezone.replace(':','').replace('00','')
+        user_tz_str = user.employer_timezone.replace(':','').replace('00','')
+        # pull numbers out of string to calculate time
+        user_tz = user_tz_str[:3] if user_tz_str[0] == '-' else user_tz_str[1:3]
         # calculate time difference 
-        
-        # added
-        print(user_tz)
-        time_dif = int(user_tz[:3]) - int(tzoffset)
-        print(time_dif)
+        time_dif = int(user_tz) - int(tzoffset)
 
         #Get Country data using the country the city is in from teleport api 
         country = city_detail_url['_links']['city:country']['name']

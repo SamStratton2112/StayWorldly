@@ -29,7 +29,7 @@ Stay Worldly allows a user to create an account, search for cities world wide, l
 
 
 ### Localhost 
-- If running Stay Worldly locally and your travel database is empty and error will be triggered. To fix this error comment out lines 41-46 and (replace all_user_cities=all_user_cities) with  (all_user_cities=all_cities) on return in lines 62 and 66
+- If running Stay Worldly locally and your travel database is empty an error will be triggered. To fix this error comment out line 49 and comment in line 51 until 9 atleast cities have been added to your database. 
 
 
 ### Tests:
@@ -39,7 +39,7 @@ Stay Worldly allows a user to create an account, search for cities world wide, l
 
 
 These tests can be ran in the terminal with:
-- python -m unittest file_name.py
+- ipython -m unittest file_name.py
 
 
 ### User Flow
