@@ -241,6 +241,9 @@ def show_city(city):
         # pull numbers out of string 
         user_tz = user_tz_str[0:3] if user_tz_str[0] == '-' else user_tz_str[1:3]
         # calculate time difference 
+        if len(user_tz)==2:
+            # handle negative tz
+            time_dif = (-1 * int(user_tz[1:])) - int(tzoffset)
         time_dif = int(user_tz) - int(tzoffset)
 
         #Get Country data using the country the city is in from teleport api 
