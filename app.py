@@ -239,7 +239,7 @@ def show_city(city):
         # get user timezone info
         user = User.query.filter_by(username = session['username']).first()
         # prep string to become int
-        user_tz_str = user.employer_timezone.replace(':', '').replace('00', '')
+        user_tz_str = user.employer_timezone.replace(':', '').replace('00', '').replace(',', '')
         # pull numbers out of string to calculate time
         user_tz = user_tz_str[1:3] if user_tz_str[1] == '-' else user_tz_str[2:3]
         # calculate time difference 
