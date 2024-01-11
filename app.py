@@ -10,7 +10,7 @@ import os
 
 app = Flask(__name__)
 
-# database for localhost
+# # database for localhost
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///travel'
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -49,7 +49,7 @@ def homepage():
     # all_user_cities = random.sample(user_cities,9)
     # IF DATABASE IS EMPTY COMMENT OUT LINE 49 AND COMMENT IN LINE 51 UNTIL 9 CITIES HAVE BEEN SAVED 
     # all_user_cities = random.choice(user_cities)
-    # 
+    # remove line 52
     all_user_cities = user_cities
     form = SearchForm()
     if form.validate_on_submit():
@@ -243,7 +243,10 @@ def show_city(city):
         # pull numbers out of string to calculate time
         user_tz = user_tz_str[:3] if user_tz_str[0] == '-' else user_tz_str[1:3]
         # calculate time difference 
+        print(tzoffset, user_tz_str[0])
         time_dif = int(user_tz) - int(tzoffset)
+        print(time_dif)
+        # issue with 
 
         #Get Country data using the country the city is in from teleport api 
         country = city_detail_url['_links']['city:country']['name']
