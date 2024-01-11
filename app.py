@@ -46,11 +46,9 @@ def homepage():
             all_user_cities.append(city.city_name)
             user_cities.insert(0, city)
     # get random set of 9 cities
-    # all_user_cities = random.sample(user_cities,9)
+    all_user_cities = random.sample(user_cities,9)
     # IF DATABASE IS EMPTY COMMENT OUT LINE 49 AND COMMENT IN LINE 51 UNTIL 9 CITIES HAVE BEEN SAVED 
-    # all_user_cities = random.choice(user_cities)
-    # remove line 52
-    all_user_cities = user_cities
+    # all_user_cities = user_cities
     form = SearchForm()
     if form.validate_on_submit():
         # Ensure capitalized for API request
@@ -240,15 +238,10 @@ def show_city(city):
         user = User.query.filter_by(username = session['username']).first()
         # prep string to become int
         user_tz_str = user.employer_timezone.replace(':', '').replace('00', '').replace(',', '')
-        # pull numbers out of string to calculate time
+        # pull numbers out of string 
         user_tz = user_tz_str[0:3] if user_tz_str[0] == '-' else user_tz_str[1:3]
-
         # calculate time difference 
-        print(user_tz_str)
-        print(user_tz)
-        print(tzoffset)
         time_dif = int(user_tz) - int(tzoffset)
-        print(time_dif)
 
         #Get Country data using the country the city is in from teleport api 
         country = city_detail_url['_links']['city:country']['name']
