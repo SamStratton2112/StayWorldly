@@ -11,13 +11,13 @@ import os
 app = Flask(__name__)
 
 # # database for localhost
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///travel'
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///travel'
+# app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config["SQLALCHEMY_ECHO"] = True
 # SECRET_KEY for localhost
-# app.config['SECRET_KEY'] = 'secret'
-app.config['SECRET_KEY'] = os.environ['SECRET_KEY']
+app.config['SECRET_KEY'] = 'secret'
+# app.config['SECRET_KEY'] = os.environ['SECRET_KEY']
 
 with app.app_context():
     connect_db(app)
@@ -240,6 +240,9 @@ def show_city(city):
         user_tz_str = user.employer_timezone.replace(':', '').replace('00', '').replace(',', '')
         # pull numbers out of string 
         user_tz = user_tz_str[0:3] if user_tz_str[0] == '-' else user_tz_str[1:3]
+        print(tzoffset)
+        print(user_tz_str)
+        print(user_tz)
         # calculate time difference 
         time_dif = int(user_tz) - int(tzoffset)
 

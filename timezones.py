@@ -130,3 +130,17 @@ choices=[
     (('+12:00', 'Nukualofa'), 'Nukualofa'),
     (('+12:00', 'Samoa'), 'Samoa'),
     (('+13:00', 'Tokelau Is.'), 'Tokelau Is.')]
+
+
+def newTuples(original_array):
+    new_array = []
+    
+    for original_tuple in original_array:
+        # Combine the nested tuple into one string
+        key = ' '.join(map(str, original_tuple[0]))
+        # Create a new tuple with the combined string as the key and the value same as the old tuple
+        new_tuple = (key, original_tuple)
+        # Append the new tuple to the result array
+        new_array.append(new_tuple)
+    
+    return new_array
