@@ -243,9 +243,10 @@ def show_city(city):
         # pull numbers out of string to calculate time
         user_tz = user_tz_str[1:4] if user_tz_str[1] == '-' else user_tz_str[2:4]
         # calculate time difference 
-        print(user_tz_str)
+        print(user_tz)
         print(tzoffset)
         time_dif = int(user_tz) - int(tzoffset)
+        # -8 - 
         print(time_dif)
         # issue with 
 
