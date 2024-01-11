@@ -15,7 +15,7 @@ class LoginForm(FlaskForm):
 
 class EditUserForm(FlaskForm):
     """Edit user details form"""
-    employer_timezone = SelectField('Employer Timezone', choices=choices)
+    employer_timezone = SelectField('Employer Timezone', validators=[DataRequired()], choices=choices)
     password = PasswordField('Password', validators=[Length(min=6)])
     submit = SubmitField('Submit')
     
@@ -26,7 +26,7 @@ class RegisterUserForm(FlaskForm):
     last_name = StringField('Last Name', validators=[DataRequired()])
     username = StringField('Username', validators=[DataRequired()])
     password = PasswordField('Password', validators=[Length(min=6, max=50)])
-    employer_timezone = SelectField('Employer Timezone' validators=[DataRequired()], choices=choices)
+    employer_timezone = SelectField('Employer Timezone', validators=[DataRequired()], choices=choices)
     submit = SubmitField('Submit')
     
     
