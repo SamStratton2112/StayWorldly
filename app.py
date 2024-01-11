@@ -241,7 +241,7 @@ def show_city(city):
         # prep string to become int
         user_tz_str = user.employer_timezone.replace(':', '').replace('00', '')
         # pull numbers out of string to calculate time
-        user_tz = user_tz_str[1:5] if user_tz_str[1] == '-' else user_tz_str[2:5]
+        user_tz = user_tz_str[1:4] if user_tz_str[1] == '-' else user_tz_str[2:4]
         # calculate time difference 
         print(user_tz)
         print(tzoffset)
