@@ -48,7 +48,9 @@ def homepage():
     # get random set of 9 cities
     # all_user_cities = random.sample(user_cities,9)
     # IF DATABASE IS EMPTY COMMENT OUT LINE 49 AND COMMENT IN LINE 51 UNTIL 9 CITIES HAVE BEEN SAVED 
-    all_user_cities = random.choice(user_cities)
+    # all_user_cities = random.choice(user_cities)
+    # 
+    all_user_cities = user_cities
     form = SearchForm()
     if form.validate_on_submit():
         # Ensure capitalized for API request
