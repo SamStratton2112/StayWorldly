@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SelectField, SubmitField
 from wtforms.validators import DataRequired, Length
-from timezones import choices
+import timezones
 
 class SearchForm(FlaskForm):
     """search city form"""
@@ -15,7 +15,7 @@ class LoginForm(FlaskForm):
 
 class EditUserForm(FlaskForm):
     """Edit user details form"""
-    employer_timezone = SelectField('Employer Timezone', validators=[DataRequired()], choices=choices)
+    employer_timezone = SelectField('Employer Timezone', validators=[DataRequired()], choices=timezones.choices)
     password = PasswordField('Password', validators=[Length(min=6)])
     submit = SubmitField('Submit')
     
@@ -26,7 +26,7 @@ class RegisterUserForm(FlaskForm):
     last_name = StringField('Last Name', validators=[DataRequired()])
     username = StringField('Username', validators=[DataRequired()])
     password = PasswordField('Password', validators=[Length(min=6, max=50)])
-    employer_timezone = SelectField('Employer Timezone', validators=[DataRequired()], choices=choices)
+    employer_timezone = SelectField('Employer Timezone', validators=[DataRequired()], choices=timezones.choices)
     submit = SubmitField('Submit')
     
     
