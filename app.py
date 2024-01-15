@@ -182,7 +182,7 @@ def show_city(city):
     try: 
         res = requests.get('https://api.teleport.org/api/cities/', params={'search': city, 'limit':1})
         city_urls = res.json()
-        console.log(city_urls)
+        print(city_urls)
         # get url for city information urls and make request
         city_details_urls =  requests.get(
             city_urls['_embedded']['city:search-results'][0]['_links']['city:item']['href'])
