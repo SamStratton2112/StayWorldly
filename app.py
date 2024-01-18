@@ -19,6 +19,8 @@ app.config["SQLALCHEMY_ECHO"] = True
 # app.config['SECRET_KEY'] = 'secret'
 app.config['SECRET_KEY'] = os.environ['SECRET_KEY']
 
+# THIS HAS CHANGED MY JSON RESPONSE 
+# FIX IT 
 with app.app_context():
     connect_db(app)
 
@@ -32,7 +34,7 @@ def homepage():
         - Navbar shows option to see user page/information
         - list of cities 
         - form to search for cities"""
-
+    flash("The API I built stay worldly with is no longer public. It will be replace ASAP.")
     # initial cities list with duplication 
     all_cities = User_city.query.all()
     # initialize list used to render cities without duplication
