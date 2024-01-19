@@ -34,7 +34,7 @@ def homepage():
         - Navbar shows option to see user page/information
         - list of cities 
         - form to search for cities"""
-    flash("The API I built stay worldly with is no longer public. It will be replace ASAP.")
+    flash("The API I built stay worldly with is no longer public. It will be replaced ASAP.")
     # initial cities list with duplication 
     all_cities = User_city.query.all()
     # initialize list used to render cities without duplication
