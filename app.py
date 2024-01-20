@@ -11,13 +11,13 @@ import os
 app = Flask(__name__)
 
 # # database for localhost
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///travel'
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///travel'
+# app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config["SQLALCHEMY_ECHO"] = True
 # SECRET_KEY for localhost
-# app.config['SECRET_KEY'] = 'secret'
-app.config['SECRET_KEY'] = os.environ['SECRET_KEY']
+app.config['SECRET_KEY'] = 'secret'
+# app.config['SECRET_KEY'] = os.environ['SECRET_KEY']
 
 # THIS HAS CHANGED MY JSON RESPONSE 
 # FIX IT 
@@ -34,7 +34,6 @@ def homepage():
         - Navbar shows option to see user page/information
         - list of cities 
         - form to search for cities"""
-    flash("The API I built stay worldly with is no longer public. It will be replaced ASAP.")
     # initial cities list with duplication 
     all_cities = User_city.query.all()
     # initialize list used to render cities without duplication
@@ -48,21 +47,32 @@ def homepage():
             all_user_cities.append(city.city_name)
             user_cities.insert(0, city)
     # get random set of 9 cities
-    all_user_cities = random.sample(user_cities,9)
+    # all_user_cities = random.sample(user_cities,9)
     # IF DATABASE IS EMPTY COMMENT OUT LINE 49 AND COMMENT IN LINE 51 UNTIL 9 CITIES HAVE BEEN SAVED 
-    # all_user_cities = user_cities
+    all_user_cities = user_cities
     form = SearchForm()
     if form.validate_on_submit():
         # Ensure capitalized for API request
-        city = request.form['city'].capitalize()
+        cityInput = request.form['city'].capitalize()
         # Get list of first 5 matching cities 
-        res = requests.get('https://api.teleport.org/api/cities/', params={'search': city, 'limit':5})
+        res = requests.get('https://wft-geo-db.p.rapidapi.com/v1/geo/cities/', 
+        params={'namePrefix': cityInput, 'limit':10}, 
+        headers={
+            "X-RapidAPI-Key":"b2bd10d3d8msh9e611b03498c0d7p133fadjsn53cbcad402a5","X-RapidAPI-Host": "wft-geo-db.p.rapidapi.com"})
         city_data = res.json()
-        for city in city_data['_embedded']['city:search-results']:
+        for city in city_data['data']:
             # add city name and image url to results list
+            image = requests.get('https://travel-info-api.p.rapidapi.com/country', 
+            params = {"country":f"{city['country']}"},
+            headers = {
+        	"X-RapidAPI-Key": "b2bd10d3d8msh9e611b03498c0d7p133fadjsn53cbcad402a5","X-RapidAPI-Host": "travel-info-api.p.rapidapi.com"})
+            img_url = image.json()
+            print(img_url)
+            print(city)
             city_results.append((
-                city['matching_full_name'], 
-                city['_links']['city:item']['href']))
+                f"{city['name']}, {city['country']}, {city['region']}", 
+                img_url))
+            print(city_results)
         return render_template('home.html', form=form, cities=city_results, all_user_cities=all_user_cities)
     return render_template('home.html', form=form, all_user_cities=all_user_cities)
 
