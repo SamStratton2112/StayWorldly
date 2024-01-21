@@ -5,20 +5,21 @@
 <div class="text-center containter-fluid m-5 justify-content-center">
     <div class="row m-5">
         <div class="card col p-0 text-center">
-            <img class="card-img img-fluid" src="{{city_image}}">
+            <img class="card-img img-fluid" src="{{image}}">
             <div class="card-img-overlay">
-                <span class="card-title fw-bolder h1 position-absolute start-0 ol top-0 p-3">{{city_name}}</span>
+                <span class="card-title fw-bolder h1 position-absolute start-0 ol top-0 p-3">{{city_name}}, {{city_country}}</span>
             </div>
         </div>
     </div>
     <div class="row ">
-        <form action="/save/{{city_short_name}}" method="POST">
+        <form action="/save/{{city_name}}" method="POST">
             <button class="h1 loadbtn col-1 fw-bolder btn border-white text-white">Save City</button>
         </form>
     </div>
     <div class="justify-content-center row m-5">
         <div class="btn col-10 p-0 text-center">
-                <p class="card-text fw-bolder border-white text-white h2">{{summary}}</p>
+            <span class="fw-bolder h1 text-white">A little about {{city_country}}</span>
+                <p class="card-text fw-bolder border-white text-white h2">{{country_description}}</p>
         </div>
     </div>
     <div class="row justify-content-center">
@@ -32,118 +33,12 @@
                     {% endfor %}
                 </ul> 
                 <li class="m-2">Currency: {{currency}}</li>
-                <li class="m-2">Population: {{population}}</li>
-                <li class="m-2">Safety: {{saftey}}/10</li>
-                <ul class="list-unstyled text-white h5 text-start">
-                    {% if saftey <= 5 %}
-                    <li class="m-2">- Safety may be a concern so, especially when traveling alone, take appropriate precautions.</li>
-                    {% else %}
-                    <li class="m-2">- This city is known to be very safe.</li>
-                    {% endif %}
-                </ul> 
-                <li class="m-2">Housing: {{housing}}/10</li>
-                <ul class="list-unstyled text-white h5 text-start">
-                    {% if housing <= 4 %}
-                    <li class="m-2">- Housing may be one of your main expenses.</li>
-                    {% else %}
-                    <li>- This city has affordable housing available.</li>
-                    {% endif %}
-                </ul>
-                <li class="m-2">Cost of Living: {{cost}}/10</li>
-                <ul class="list-unstyled text-white h5 text-start">
-                    {% if cost <= 4 %}
-                    <li class="m-2">- Daily expenses and bills may add up quickly.</li>
-                    {% else %}
-                    <li class="m-2">- This city has relatively affordable bills and daily expenses should be manageable.</li>
-                    {% endif %}
-                </ul> 
-                <li class="m-2">Commute: {{commute}}/10</li>
-                <ul class="list-unstyled text-white h5 text-start">
-                    {% if commute <= 5 %}
-                    <li class="m-2">- Commuting in this city may be difficult and/or time consuming.</li>
-                    {% else %}
-                    <li class="m-2">- Commuting in this city should be quick and easy.</li>
-                    {% endif %}
-                </ul> 
-                <li class="m-2">Healthcare: {{healthcare}}/10</li>
-                <ul class="list-unstyled text-white h5 text-start">
-                    {% if healthcare <= 4 %}
-                    <li class="m-2">- Healthcare may be hard to access.</li>
-                    {% else %}
-                    <li class="m-2">- Healthcare is highly accessible.</li>
-                    {% endif %}
-                </ul> 
-                <li class="m-2">Internet: {{internet}}/10</li>
-                <ul class="list-unstyled text-white h5 text-start">
-                    {% if internet <= 4 %}
-                    <li class="m-2">- Internet access may be limited.</li>
-                    {% else %}
-                    <li class="m-2">- Internet access should be very reliable.</li>
-                    {% endif %}
-                </ul> 
-                <li class="m-2">Culture: {{culture}}/10</li>
-                <ul class="list-unstyled text-white h5 text-start">
-                    {% if culture <= 5 %}
-                    <li class="m-2">- Culture is not at the forefront of this city but don't forget about hidden gems!</li>
-                    {% else %}
-                    <li class="m-2">- Culture is thriving here! You'll meet people from several walks of life and cultural institutions/events are plentiful.</li>
-                    {% endif %}
-                </ul>          
+                <li class="m-2">Population: {{population}}</li>       
                 <li class="m-2">Driving side: {{driving}}</li>
 
             </ul>
         </div>
         <div class="btn col-10 col-xl-4 m-3 p-0 text-center">
-            <p class="fw-bolder text-white h2 m-2">Travel</p>
-            <ul class="list-unstyled text-white h4 mb-5">
-                <li class="m-2 text-start">Travel: {{travel}}/10</li>
-                <ul class="list-unstyled text-white h4 text-start">
-                    {% if travel < 5 %}
-                    <li class="m-2">- Airports are accessible but getting there may be a journey in itself. Hopefully, depending on your destination, connecting flights won't be excessive.
-                    </li>
-                    {% else %}
-                    <li class="m-2">- Airports are easily accessible. Depending on your destination, connecting flights shouldn't be excessive.</p>
-                    {% endif %}
-                </ul> 
-            </ul>
-            <p class="card-text text-white fw-bolder h2"> Economy</p>
-            <ul class="list-unstyled text-white m-3 h4 text-start mb-5">
-                <li>Economy: {{economy}}/10</li>
-                <ul class="list-unstyled text-white h4 text-start mb-4">
-                    {% if economy <= 4 %}
-                    <li class="m-2">- Economies fluctuate. Your income, depending on the original currency, may go farther here than you might expect.</li>
-                    {% else %}
-                    <li class="m-2">- Economies fluctuate. Your income, depending on the original currency, may not go as far here as you might expect.</li>
-                    {% endif %}
-                </ul> 
-                <li class="pt-2">Taxes: {{tax}}/10</li>
-                <ul class="list-unstyled text-white h4 text-start">
-                    {% if tax <= 4 %}
-                    <li class="m-2">- Taxes may be high.</li>
-                    {% else %}
-                    <li class="m-2">- Taxes should be manageable.</li>
-                    {% endif %}
-                </ul> 
-            </ul>
-            <p class="card-text text-white fw-bolder h2 mt-5"> Business</p>
-            <ul class="list-unstyled text-white m-3 h4 text-start">
-                <li>Startup Friendly Environment: {{startups}}/10</li>
-                <ul class="list-unstyled text-white h4 text-start">
-                    {% if startups < 5 %}
-                    <li class="m-2">- There aren't many start ups here. This may not be the best city for a startup but local competition will be low.</li>
-                    {% else %}
-                    <li class="m-2">- There are several startups here! This can be a great city for a startup but competition may be high.</li>
-                    {% endif %}
-                </ul> 
-                <li class="pt-4">Venture Capital: {{v_capital}}/10</li>
-                <ul class="list-unstyled text-white h4 text-start">
-                    {% if v_capital < 5 %}
-                    <li class="m-2">- There may not be many venture capital opportunities in this city.</li>
-                    {% else %}
-                    <li class="m-2">- There may be plenty of Venture Capital opportunities in this city.</li>
-                    {% endif %}
-                </ul> 
-            </ul>
         </div>
         <div class="btn col-10 col-xl-4 p-0 m-3 text-center ps-3">
             <p class="fw-bolder text-white h2 m-2">Weather</p>
