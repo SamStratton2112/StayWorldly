@@ -210,6 +210,11 @@ def show_city(id):
         country_description = country_data['data']['info']
         image = country_data['data']['image_url']
 
+        # get things to do info 
+        country_activities = requests.get('https://travel-info-api.p.rapidapi.com/country-activities', params = {"country":f"{city_data['data']['country']}"},headers = { "X-RapidAPI-Key":"b2bd10d3d8msh9e611b03498c0d7p133fadjsn53cbcad402a5","X-RapidAPI-Host": "travel-info-api.p.rapidapi.com"})
+        all_activities = country_activities.json()
+        activities = all_activities['data']['activities']
+
     
         # Get timezone and weather data using lat/lon information from teleport api 
         city_lat = city_data['data']['latitude']
@@ -243,7 +248,7 @@ def show_city(id):
         curr = final_currency
         languages = country_data['languages'].values()
         driving = country_data['car']['side'].capitalize()
-        return render_template('city.html', c_temp=c_temp,  population=population, user=user, currency=curr, driving=driving, languages=languages,time_dif=time_dif, timezone=timezone, country_description=country_description, city_country=city_country,  city_name=city_name, temp=temp, image=image, description=description)
+        return render_template('city.html', c_temp=c_temp,  population=population, user=user, currency=curr, driving=driving, languages=languages,time_dif=time_dif, timezone=timezone, country_description=country_description, city_country=city_country,  city_name=city_name, temp=temp, image=image, description=description, activities=activities)
         return city_data
     except KeyError:
         flash("We're still working on collecting data for this location!")
