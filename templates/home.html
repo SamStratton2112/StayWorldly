@@ -25,7 +25,7 @@
         <!-- list to show search results  -->
         <ul class="list-unstyled">
             {% for city in cities %}
-            <li><a class="text-white h4 fw-bolder loadbtn" href="/city/{{city[0]}}">{{city[0]}}</a></li>
+            <li><a class="text-white h4 fw-bolder loadbtn" href="/city/{{city['id']}}">{{city['name']}}</a></li>
             {% endfor %}
         </ul>
     </div>

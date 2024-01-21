@@ -49,30 +49,32 @@ def homepage():
     # get random set of 9 cities
     # all_user_cities = random.sample(user_cities,9)
     # IF DATABASE IS EMPTY COMMENT OUT LINE 49 AND COMMENT IN LINE 51 UNTIL 9 CITIES HAVE BEEN SAVED 
+    print(city_results)
     all_user_cities = user_cities
     form = SearchForm()
     if form.validate_on_submit():
         # Ensure capitalized for API request
         cityInput = request.form['city'].capitalize()
         # Get list of first 5 matching cities 
-        res = requests.get('https://wft-geo-db.p.rapidapi.com/v1/geo/cities/', 
+        res = requests.get('https://wft-geo-db.p.rapidapi.com/v1/geo/cities', 
         params={'namePrefix': cityInput, 'limit':10}, 
         headers={
             "X-RapidAPI-Key":"b2bd10d3d8msh9e611b03498c0d7p133fadjsn53cbcad402a5","X-RapidAPI-Host": "wft-geo-db.p.rapidapi.com"})
         city_data = res.json()
         for city in city_data['data']:
             # add city name and image url to results list
-            image = requests.get('https://travel-info-api.p.rapidapi.com/country', 
+            print(city)
+            city_basics = requests.get('https://travel-info-api.p.rapidapi.com/country', 
             params = {"country":f"{city['country']}"},
             headers = {
         	"X-RapidAPI-Key": "b2bd10d3d8msh9e611b03498c0d7p133fadjsn53cbcad402a5","X-RapidAPI-Host": "travel-info-api.p.rapidapi.com"})
-            img_url = image.json()
-            print(img_url)
-            print(city)
-            city_results.append((
-                f"{city['name']}, {city['country']}, {city['region']}", 
-                img_url))
-            print(city_results)
+            data = city_basics.json()
+            print(data)
+            city_results.append(
+                { "name":f"{city['name']}, {city['country']}, {city['region']}",
+                "id" : city['id'],
+                "image_url" : data['data']['image_url']})
+            print('RESULTS', city_results)
         return render_template('home.html', form=form, cities=city_results, all_user_cities=all_user_cities)
     return render_template('home.html', form=form, all_user_cities=all_user_cities)
 
@@ -186,99 +188,104 @@ def edit_user(user_id):
             return redirect(f'/user/{user_id}/edit')
     return render_template('edit.html', form=form, user=user)
 
-@app.route('/city/<city>', methods=["GET", "POST"])
-def show_city(city):
+@app.route('/city/<int:id>', methods=["GET", "POST"])
+def show_city(id):
     """Get all relevant information about a city"""
 
     # Get City data from Teleport API
     try: 
-        res = requests.get('https://api.teleport.org/api/cities/', params={'search': city, 'limit':1})
+        print('current',id)
+        res = requests.get(f'https://wft-geo-db.p.rapidapi.com/v1/geo/cities/{id}', 
+        headers={
+        "X-RapidAPI-Key": "b2bd10d3d8msh9e611b03498c0d7p133fadjsn53cbcad402a5","X-RapidAPI-Host": "wft-geo-db.p.rapidapi.com"
+        })
         city_urls = res.json()
-        print(city_urls)
+        print(res)
         # get url for city information urls and make request
-        city_details_urls =  requests.get(
-            city_urls['_embedded']['city:search-results'][0]['_links']['city:item']['href'])
-        city_detail_url = city_details_urls.json()
-        # get url to city score urls and make request with it
-        city_scores_url = requests.get(
-            city_detail_url['_links']['city:urban_area']['href'])
-        city_data = city_scores_url.json()
-        # get actual data from city scores link 
-        city_scores = requests.get(city_data['_links']['ua:scores']['href'])
-        # get city image from images link 
-        city_photos = requests.get(city_data['_links']['ua:images']['href'])
-        city_img = city_photos.json()
-        city_image = city_img['photos'][0]['image']['web']
-        city_name = city_detail_url['full_name']
-        city_short_name = city_detail_url['name']
-        population = city_detail_url['population']
+        # city_details_urls =  requests.get(
+        #     city_urls['_embedded']['city:search-results'][0]['_links']['city:item']['href'])
+        # city_detail_url = city_details_urls.json()
+        # # get url to city score urls and make request with it
+        # city_scores_url = requests.get(
+        #     city_detail_url['_links']['city:urban_area']['href'])
+        # city_data = city_scores_url.json()
+        # # get actual data from city scores link 
+        # city_scores = requests.get(city_data['_links']['ua:scores']['href'])
+        # # get city image from images link 
+        # city_photos = requests.get(city_data['_links']['ua:images']['href'])
+        # city_img = city_photos.json()
+        # city_image = city_img['photos'][0]['image']['web']
+        # city_name = city_detail_url['full_name']
+        # city_short_name = city_detail_url['name']
+        # population = city_detail_url['population']
     
 
-        # make category information accessible 
-        city_final = city_scores.json()
-        city_cats_data = city_final['categories']
-        city_cats={}
-        for cat in city_cats_data:
-            city_cats.update({cat['name']: int(cat['score_out_of_10'])})
-        housing = city_cats['Housing']
-        cost = city_cats['Cost of Living']
-        startups = city_cats['Startups']
-        v_capital= city_cats['Venture Capital']
-        travel = city_cats['Travel Connectivity']
-        commute = city_cats['Commute']
-        safety = city_cats['Safety']
-        healthcare = city_cats['Healthcare']
-        economy = city_cats['Economy']
-        tax = city_cats['Taxation']
-        internet = city_cats['Internet Access']
-        culture= city_cats['Leisure & Culture']
-        environment = city_cats['Environmental Quality']
-        summ = city_final['summary']
-        # remove written in tags 
-        summary = summ.replace('<p>', '').replace('<b>', '').replace('</b>', '').replace('</p>', '').replace('Teleport', '').replace('<i>', '').replace('</i>', '').replace('<br>', '').replace('</br>', '')
+        # # make category information accessible 
+        # city_final = city_scores.json()
+        # city_cats_data = city_final['categories']
+        # city_cats={}
+        # for cat in city_cats_data:
+        #     city_cats.update({cat['name']: int(cat['score_out_of_10'])})
+        # housing = city_cats['Housing']
+        # cost = city_cats['Cost of Living']
+        # startups = city_cats['Startups']
+        # v_capital= city_cats['Venture Capital']
+        # travel = city_cats['Travel Connectivity']
+        # commute = city_cats['Commute']
+        # safety = city_cats['Safety']
+        # healthcare = city_cats['Healthcare']
+        # economy = city_cats['Economy']
+        # tax = city_cats['Taxation']
+        # internet = city_cats['Internet Access']
+        # culture= city_cats['Leisure & Culture']
+        # environment = city_cats['Environmental Quality']
+        # summ = city_final['summary']
+        # # remove written in tags 
+        # summary = summ.replace('<p>', '').replace('<b>', '').replace('</b>', '').replace('</p>', '').replace('Teleport', '').replace('<i>', '').replace('</i>', '').replace('<br>', '').replace('</br>', '')
     
-        # Get timezone and weather data using lat/lon information from teleport api 
-        city_lat = city_detail_url['location']['latlon']['latitude']
-        city_lon = city_detail_url['location']['latlon']['longitude']
-        tz_weather_data = requests.get(f'https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/{city_lat},{city_lon}?key=9Z9PX7J5C7ZRC76D38PL4WFL8')
-        data = tz_weather_data.json()
-        timezone = data['timezone']
-        tzoffset = data['tzoffset']
-        description = data['days'][0]['description']
-        temp = int(data['days'][0]['temp'])
-        c_temp = int((temp-32)*5/9)
-        # get user timezone info
-        user = User.query.filter_by(username = session['username']).first()
-        # prep string to become int
-        user_tz_str = user.employer_timezone.replace(':', '').replace('00', '').replace(',', '')
-        # pull numbers out of string 
-        user_tz = user_tz_str[0:3] if user_tz_str[0] == '-' else user_tz_str[1:3]
-        # calculate time difference 
-        if len(user_tz)==3:
-            # handle negative tz
-            time_dif = (-1 * int(user_tz[1:])) - int(tzoffset)
-        time_dif = int(user_tz) - int(tzoffset)
+        # # Get timezone and weather data using lat/lon information from teleport api 
+        # city_lat = city_detail_url['location']['latlon']['latitude']
+        # city_lon = city_detail_url['location']['latlon']['longitude']
+        # tz_weather_data = requests.get(f'https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/{city_lat},{city_lon}?key=9Z9PX7J5C7ZRC76D38PL4WFL8')
+        # data = tz_weather_data.json()
+        # timezone = data['timezone']
+        # tzoffset = data['tzoffset']
+        # description = data['days'][0]['description']
+        # temp = int(data['days'][0]['temp'])
+        # c_temp = int((temp-32)*5/9)
+        # # get user timezone info
+        # user = User.query.filter_by(username = session['username']).first()
+        # # prep string to become int
+        # user_tz_str = user.employer_timezone.replace(':', '').replace('00', '').replace(',', '')
+        # # pull numbers out of string 
+        # user_tz = user_tz_str[0:3] if user_tz_str[0] == '-' else user_tz_str[1:3]
+        # # calculate time difference 
+        # if len(user_tz)==3:
+        #     # handle negative tz
+        #     time_dif = (-1 * int(user_tz[1:])) - int(tzoffset)
+        # time_dif = int(user_tz) - int(tzoffset)
 
-        #Get Country data using the country the city is in from teleport api 
-        country = city_detail_url['_links']['city:country']['name']
-        country_link = requests.get(f'https://countryinfoapi.com/api/countries/name/{country}')
-        country_data = country_link.json()
-        currencies = country_data['currencies']
-        currency = str(currencies.keys()).replace("dict_keys(['","").replace("'])","")
-        final_currency = currencies[currency]['name']
-        curr = final_currency
-        languages = country_data['languages'].values()
-        driving = country_data['car']['side'].capitalize()
-        return render_template('city.html', housing=housing, cost=cost, 
-                startups=startups, v_capital=v_capital, travel=travel, 
-                commute=commute, saftey=safety, healthcare=healthcare, 
-                economy=economy, tax=tax, internet=internet, culture=culture,
-                environment=environment, c_temp=c_temp, 
-                city_short_name=city_short_name, population=population, 
-                user=user, currency=curr, driving=driving, languages=languages, 
-                time_dif=time_dif, timezone=timezone, city_image=city_image,
-                summary=summary, city_name=city_name, temp=temp, 
-                description=description)
+        # #Get Country data using the country the city is in from teleport api 
+        # country = city_detail_url['_links']['city:country']['name']
+        # country_link = requests.get(f'https://countryinfoapi.com/api/countries/name/{country}')
+        # country_data = country_link.json()
+        # currencies = country_data['currencies']
+        # currency = str(currencies.keys()).replace("dict_keys(['","").replace("'])","")
+        # final_currency = currencies[currency]['name']
+        # curr = final_currency
+        # languages = country_data['languages'].values()
+        # driving = country_data['car']['side'].capitalize()
+        # return render_template('city.html', housing=housing, cost=cost, 
+        #         startups=startups, v_capital=v_capital, travel=travel, 
+        #         commute=commute, saftey=safety, healthcare=healthcare, 
+        #         economy=economy, tax=tax, internet=internet, culture=culture,
+        #         environment=environment, c_temp=c_temp, 
+        #         city_short_name=city_short_name, population=population, 
+        #         user=user, currency=curr, driving=driving, languages=languages, 
+        #         time_dif=time_dif, timezone=timezone, city_image=city_image,
+        #         summary=summary, city_name=city_name, temp=temp, 
+        #         description=description)
+        return city_urls
     except KeyError:
         flash("We're still working on collecting data for this location!")
         return redirect('/')
