@@ -18,11 +18,11 @@
     <div class="row justify-content-center"> 
     <!-- list cities to visit in individual cards  -->
     {% for city in to_visit %}
-        <div class="card col-9 col-lg-4 col-xl-3 p-0 bg-black m-1 mb-4 text-center">
+        <div class="card col-9 col-lg-4 col-xl-3 p-0 bg-black m-1 mb-4 text-center image-card">
             <a href="/city/{{city}}" class="loadbtn">
-                <img class="card-img img-fluid" src="{{city.city_image}}">
+                <img class="card-img img-fluid image-card" src="{{city.city_image}}">
                 <div class="card-img-overlay">
-                    <span class="card-title text-white ol h3">{{city}}</span>
+                    <span class="card-title text-white city-page-name">{{city}}</span>
                     <form action="/remove/{{city.id}}" method="POST">
                         <button class="delete_u_city btn border-white text-white m-1 position-absolute ol btn-sm h5 end-0 bottom-0">Remove</button>
                     </form>
@@ -45,11 +45,11 @@
     <span class="h1 text-white ol">Past Adventures:</span>
     <div class="row justify-content-center">
     {% for city in visited %}
-        <div class="card col-9 col-lg-4 col-xl-3 p-0 bg-black m-1 mb-4">
+        <div class="card col-9 col-lg-4 col-xl-3 p-0 bg-black m-1 mb-4 image-card">
             <a href="/city/{{city}}" class="loadbtn">
-                <img class="card-img img-fluid" src="{{city.city_image}}">
+                <img class="card-img img-fluid image-card" src="{{city.city_image}}">
                 <div class="card-img-overlay">
-                    <span class="card-title text-white ol h3">{{city}}</span>
+                    <span class="card-title text-white city-page-name">{{city}}</span>
                     <!-- Change value of visited to 1 from 0 indicating  not visited  -->
                     <form action="/city/{{city.id}}/notvisited" method="POST">
                         <button class="position-absolute btn btn-sm border-white text-white m-1 ol h5 start-0 bottom-0">Mark as not visited</button>

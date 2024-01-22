@@ -47,11 +47,11 @@
         {% else %}
             {% for city in all_user_cities %}
             <!-- generate city card -->
-            <div class="card col-9 col-lg-4 col-xl-3 p-0 bg-black m-3 mb-4 text-center">
+            <div class="card col-9 col-lg-4 col-xl-3 p-0 bg-black m-3 mb-4  text-center">
                     <a href="/city/{{city['name']}}" class="loadbtn">
-                        <img class="card-img img-fluid" src="{{city.city_image}}">
+                        <img class="card-img img-fluid image-card" src="{{city.city_image}}">
                         <div class="card-img-overlay">
-                            <span class="card-title text-white ol fw-bolder h1">{{city}}</span>
+                            <span class="card-title text-white city-page-name ">{{city}}</span>
                         </div>
                     </a>
             </div>
