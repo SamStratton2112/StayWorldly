@@ -47,9 +47,9 @@ def homepage():
             all_user_cities.append(city.city_name)
             user_cities.insert(0, city)
     # get random set of 9 cities
-    # all_user_cities = random.sample(user_cities,9)
-    # IF DATABASE IS EMPTY COMMENT OUT LINE 49 AND COMMENT IN LINE 51 UNTIL 9 CITIES HAVE BEEN SAVED 
-    all_user_cities = user_cities
+    all_user_cities = random.sample(user_cities,9)
+    # IF DATABASE IS EMPTY COMMENT OUT LINE 40 AND COMMENT IN LINE 52 UNTIL 9 CITIES HAVE BEEN SAVED 
+    # all_user_cities = user_cities
     form = SearchForm()
     if form.validate_on_submit():
         # Ensure capitalized for API request
@@ -210,7 +210,7 @@ def show_city(city_name):
         show_places = [p for p in s_places if p['properties']['name'] != '']
 
         # get country details, no details for US
-        if country_code != 'US': 
+        if country_code != 'US' and country_code != 'RU': 
             # get country info
             country_info = requests.get('https://travel-info-api.p.rapidapi.com/country', params = {"country":city_country},headers={"X-RapidAPI-Key":"b2bd10d3d8msh9e611b03498c0d7p133fadjsn53cbcad402a5","X-RapidAPI-Host": "travel-info-api.p.rapidapi.com"})
             all_details = country_info.json()
