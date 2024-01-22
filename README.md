@@ -23,9 +23,11 @@ Stay Worldly allows a user to create an account, search for cities world wide, l
 # APIs used:
 
 
-1. https://developers.teleport.org/api/reference/#!/root/getRoot
+1. https://api.api-ninjas.com/
 2. https://countryinfoapi.com/documentation
 3. https://www.visualcrossing.com/resources/documentation/weather-api/timeline-weather-api/
+4. https://pixabay.com/api/
+5. https://travel-info-api.p.rapidapi.com/
 
 
 ### Localhost 

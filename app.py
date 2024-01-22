@@ -11,13 +11,13 @@ from helpers import country_codes, find_key_by_value
 app = Flask(__name__)
 
 # # database for localhost
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///travel'
-# app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///travel'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config["SQLALCHEMY_ECHO"] = True
 # SECRET_KEY for localhost
-app.config['SECRET_KEY'] = 'secret'
-# app.config['SECRET_KEY'] = os.environ['SECRET_KEY']
+# app.config['SECRET_KEY'] = 'secret'
+app.config['SECRET_KEY'] = os.environ['SECRET_KEY']
 
 # THIS HAS CHANGED MY JSON RESPONSE 
 # FIX IT 
@@ -49,7 +49,6 @@ def homepage():
     # get random set of 9 cities
     # all_user_cities = random.sample(user_cities,9)
     # IF DATABASE IS EMPTY COMMENT OUT LINE 49 AND COMMENT IN LINE 51 UNTIL 9 CITIES HAVE BEEN SAVED 
-    print(user_cities)
     all_user_cities = user_cities
     form = SearchForm()
     if form.validate_on_submit():
@@ -63,8 +62,7 @@ def homepage():
         city_data = res.json()
         for city in city_data:
             city_results.append(
-                { "name":f"{city['name']}", "country":f"{city['country']}"})
-            print('RESULTS', city_results)
+                { "name":city['name']})
         return render_template('home.html', form=form, cities=city_results, all_user_cities=all_user_cities)
     return render_template('home.html', form=form, all_user_cities=all_user_cities)
 
@@ -193,22 +191,32 @@ def show_city(city_name):
         city_name = city_info["name"]
         country_code = city_info["country"]
         city_country = find_key_by_value(country_codes, country_code)
-        print(city_country)
-        print("DATA", city_data)
         population = city_info["population"]
 
         # get city image 
         country_basics = requests.get(f'https://pixabay.com/api/?key=41953233-44daacb0d74b24b2c21cce044&q={city_country}+{city_name}&image_type=photo')
         photos = country_basics.json()
-        image= photos['hits'][0]['largeImageURL']
+        image = photos['hits'][0]['webformatURL']
 
+        # get place details
+        places_res = requests.get("https://opentripmap-places-v1.p.rapidapi.com/en/places/radius",params = {"radius":"5000","lon":city_data[0]['longitude'],"lat":city_data[0]['latitude'], 'kinds' : 'interesting_places'},headers = {
+            "X-RapidAPI-Key": "b2bd10d3d8msh9e611b03498c0d7p133fadjsn53cbcad402a5",
+            "X-RapidAPI-Host": "opentripmap-places-v1.p.rapidapi.com"
+        })
+        places = places_res.json()
+        all_places = places['features']
+        total_places = len(all_places)
+        s_places = random.sample(all_places,10)
+        show_places = [p for p in s_places if p['properties']['name'] != '']
+
+        # get country details, no details for US
         if country_code != 'US': 
             # get country info
-            country_info = requests.get('https://travel-info-api.p.rapidapi.com/country', params = {"country":f"{city_country}"},headers = { "X-RapidAPI-Key":"b2bd10d3d8msh9e611b03498c0d7p133fadjsn53cbcad402a5","X-RapidAPI-Host": "travel-info-api.p.rapidapi.com"})
+            country_info = requests.get('https://travel-info-api.p.rapidapi.com/country', params = {"country":city_country},headers={"X-RapidAPI-Key":"b2bd10d3d8msh9e611b03498c0d7p133fadjsn53cbcad402a5","X-RapidAPI-Host": "travel-info-api.p.rapidapi.com"})
             all_details = country_info.json()
             country_description= all_details['data']['info']
 
-            # get things to do info 
+            # # get things to do info 
             country_activities = requests.get('https://travel-info-api.p.rapidapi.com/country-activities', params = {"country":f"{city_country}"},headers = { "X-RapidAPI-Key":"b2bd10d3d8msh9e611b03498c0d7p133fadjsn53cbcad402a5","X-RapidAPI-Host": "travel-info-api.p.rapidapi.com"})
             all_activities = country_activities.json()
             activities = all_activities['data']['activities']
@@ -250,7 +258,7 @@ def show_city(city_name):
         curr = final_currency
         languages = country_data['languages'].values()
         driving = country_data['car']['side'].capitalize()
-        return render_template('city.html', c_temp=c_temp, user=user, currency=curr, driving=driving, languages=languages,time_dif=time_dif, timezone=timezone, city_country=city_country,  city_name=city_name, temp=temp, image=image, description=description, activities=activities, country_description=country_description, population=population)
+        return render_template('city.html', c_temp=c_temp, user=user, currency=curr, driving=driving, languages=languages,time_dif=time_dif, timezone=timezone, city_country=city_country,  city_name=city_name, temp=temp, image=image, description=description, activities=activities, country_description=country_description, population=population, show_places=show_places, total_places=total_places)
     except KeyError:
         flash("We're still working on collecting data for this location!")
         return redirect('/')
@@ -278,7 +286,8 @@ def save_city(city_name):
     # get  images 
     country_basics = requests.get(f'https://pixabay.com/api/?key=41953233-44daacb0d74b24b2c21cce044&q={city_country}+{city_name}&image_type=photo')
     photos = country_basics.json()
-    image= photos['hits'][0]['largeImageURL']
+    image= photos['hits'][0]['webformatURL']
+    
     # handle duplication 
     for c in user_cities:
         if c.city_name == city_name:

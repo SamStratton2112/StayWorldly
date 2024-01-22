@@ -40,10 +40,18 @@ body {
 .city-page-name {
     color:white;
     font-weight:bolder;
-    font-size: 500%;
+    font-size: 350%;
     text-shadow: 2px 2px 3px black;
 }
 
 .image-card {
     height: 150px;
+}
+
+.city-i{
+    height: 400px
+}
+
+.essential{
+    width: 500px;
 }

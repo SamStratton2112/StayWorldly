@@ -3,11 +3,11 @@
 {% endblock %}
 {% block content %}
 <div class="text-center containter-fluid m-5 justify-content-center">
-    <div class="row m-5">
+    <div class="row m-5 city-i">
         <div class="card col p-0 text-center">
-            <img class="card-img img-fluid" src="{{image}}">
-            <div class="card-img-overlay text center">
-                <span class="city-page-name bottom-0">{{city_name}}, {{city_country}}</span>
+            <img class="card-img img-fluid city-i" src="{{image}}">
+            <div class="card-img-overlay text-start ">
+                <span class="city-page-name bottom-0 text-start">{{city_name}}, {{city_country}}</span>
             </div>
         </div>
     </div>
@@ -17,7 +17,7 @@
         </form>
     </div>
     <div class="row justify-content-center">
-        <div class="btn col-10 m-3 pt-2 p-0 text-center ps-3">
+        <div class="btn essential col-4 m-3 pt-2 p-0 text-center ps-3">
             <span class="card-text text-white fw-bolder h1">The Essentials</span>
             <ul class="m-3 list-unstyled text-white h3 text-start">
                 <li class="m-2"> Predominant Language(s):</li>
@@ -26,25 +26,20 @@
                     <li class="m-2">- {{language}}</li>
                     {% endfor %}
                 </ul> 
-                <li class="m-2">Currency: {{currency}}</li>
-                <li class="m-2">Driving side: {{driving}}</li>
-                <li class="m-2">Population: {{population}}</li>
-            </ul>
-        </div>
-        <div class="btn col-10 m-3 pt-2 p-0 text-center ps-3">
-            <p class="card-text fw-bolder text-white h1">Timezone</p>
-            <ul class="m-3 list-unstyled text-white h3 text-start">
-                <li>Timezone: {{timezone}}</li>
+                <li class="mt-2">Currency: {{currency}}</li>
+                <li class="mt-2">Driving side: {{driving}}</li>
+                <li class="mt-2">Population: {{population}}</li>
+                <li class="mt-2">Timezone: {{timezone}}</li>
                 {% if time_dif < 0 %}
-                <li>{{city_name}} is {{time_dif * -1}} hours ahead of your employer timezone.</li>
+                <li class="mt-2">{{city_name}} is {{time_dif * -1}} hours ahead of your employer timezone.</li>
                 {% elif time_dif == 0 %}
-                <li>This city is in the same timezone as your employer.</li>
+                <li class="mt-2">This city is in the same timezone as your employer.</li>
                 {% else %}
-                <li>{{city_name}} is {{time_dif}} hours behind your employer timezone.</li>
+                <li class="m-2">{{city_name}} is {{time_dif}} hours behind your employer timezone.</li>
                 {% endif %}
             </ul>
         </div>
-        <div class="btn col-10 m-3 pt-2 p-0 text-center ps-3">
+        <div class="btn col-lg-4 m-3 pt-2 p-0 text-center ps-3">
             <p class="fw-bolder text-white h1 m-2">Weather</p>
             <ul class="m-3 list-unstyled text-white h3 text-start">
                 <li class="m-2">Current Temperature in Celsius: {{c_temp}} degrees</li>
@@ -52,6 +47,19 @@
                 <li class="m-2">Current Conditions in {{city_name}}: {{description}}</li>
             </ul>
         </div>
+        <div class="justify-content-center row m-5">
+            <div class="btn col-10 p-0 text-center">
+                <p class="card-text fw-bolder text-white h1">We currently know of {{total_places}} places to explore in {{city_name}}! Here are a few randomly selected recomendations:</p>
+                <ul class="m-3 list-unstyled text-white h3 text-start text-center">
+                    {% for p in show_places %}
+                    <li>
+                        <span class="h2 text-white m-2">{{p['properties']['name']}}</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
         <div class="justify-content-center row m-5">
             <div class="btn col-10 p-0 text-center">
                 <span class="fw-bolder h1 text-white m-3">A little about {{city_country}}...</span>
