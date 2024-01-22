@@ -6,7 +6,7 @@ import requests
 import random
 from sqlalchemy.exc import IntegrityError
 import os 
-
+from helpers import country_codes, find_key_by_value
 
 app = Flask(__name__)
 
@@ -49,29 +49,21 @@ def homepage():
     # get random set of 9 cities
     # all_user_cities = random.sample(user_cities,9)
     # IF DATABASE IS EMPTY COMMENT OUT LINE 49 AND COMMENT IN LINE 51 UNTIL 9 CITIES HAVE BEEN SAVED 
-    print(city_results)
+    print(user_cities)
     all_user_cities = user_cities
     form = SearchForm()
     if form.validate_on_submit():
         # Ensure capitalized for API request
         cityInput = request.form['city'].capitalize()
-        # Get list of first 5 matching cities 
-        res = requests.get('https://wft-geo-db.p.rapidapi.com/v1/geo/cities', 
-        params={'namePrefix': cityInput, 'limit':10}, 
+        # Get matching city 
+        res = requests.get('https://api.api-ninjas.com/v1/city?name=', 
+        params={'name': cityInput}, 
         headers={
-            "X-RapidAPI-Key":"b2bd10d3d8msh9e611b03498c0d7p133fadjsn53cbcad402a5","X-RapidAPI-Host": "wft-geo-db.p.rapidapi.com"})
+            "X-Api-Key":"bq8QLL6Jp79EIBsYjBWTlA==K8KjTdI3vm5VyHRH"})
         city_data = res.json()
-        for city in city_data['data']:
-            # add city name and image url to results list
-            city_basics = requests.get('https://travel-info-api.p.rapidapi.com/country', 
-            params = {"country":f"{city['country']}"},
-            headers = {
-        	"X-RapidAPI-Key": "b2bd10d3d8msh9e611b03498c0d7p133fadjsn53cbcad402a5","X-RapidAPI-Host": "travel-info-api.p.rapidapi.com"})
-            data = city_basics.json()
+        for city in city_data:
             city_results.append(
-                { "name":f"{city['name']}, {city['country']}, {city['region']}",
-                "id" : city['id'],
-                "image_url" : data['data']['image_url']})
+                { "name":f"{city['name']}", "country":f"{city['country']}"})
             print('RESULTS', city_results)
         return render_template('home.html', form=form, cities=city_results, all_user_cities=all_user_cities)
     return render_template('home.html', form=form, all_user_cities=all_user_cities)
@@ -186,39 +178,48 @@ def edit_user(user_id):
             return redirect(f'/user/{user_id}/edit')
     return render_template('edit.html', form=form, user=user)
 
-@app.route('/city/<int:id>', methods=["GET", "POST"])
-def show_city(id):
+@app.route('/city/<city_name>', methods=["GET", "POST"])
+def show_city(city_name):
     """Get all relevant information about a city"""
 
     # Get City data from Teleport API
     try: 
-        print('current',id)
-        res = requests.get(f'https://wft-geo-db.p.rapidapi.com/v1/geo/cities/{id}', 
+        res = requests.get('https://api.api-ninjas.com/v1/city?name=', 
+        params={'name': city_name}, 
         headers={
-        "X-RapidAPI-Key": "b2bd10d3d8msh9e611b03498c0d7p133fadjsn53cbcad402a5","X-RapidAPI-Host": "wft-geo-db.p.rapidapi.com"
-        })
+            "X-Api-Key":"bq8QLL6Jp79EIBsYjBWTlA==K8KjTdI3vm5VyHRH"})
         city_data = res.json()
-        print(city_data)
-        city_name = city_data['data']['name']
-        city_country = city_data['data']['country']
-        population = city_data['data']['population']
+        city_info = city_data[0]
+        city_name = city_info["name"]
+        country_code = city_info["country"]
+        city_country = find_key_by_value(country_codes, country_code)
+        print(city_country)
+        print("DATA", city_data)
+        population = city_info["population"]
 
-        # get country description and images 
-        country_basics = requests.get('https://travel-info-api.p.rapidapi.com/country', params = {"country":f"{city_data['data']['country']}"},headers = { "X-RapidAPI-Key":"b2bd10d3d8msh9e611b03498c0d7p133fadjsn53cbcad402a5","X-RapidAPI-Host": "travel-info-api.p.rapidapi.com"})
-        country_data = country_basics.json()
-        print(country_data)
-        country_description = country_data['data']['info']
-        image = country_data['data']['image_url']
+        # get city image 
+        country_basics = requests.get(f'https://pixabay.com/api/?key=41953233-44daacb0d74b24b2c21cce044&q={city_country}+{city_name}&image_type=photo')
+        photos = country_basics.json()
+        image= photos['hits'][0]['largeImageURL']
 
-        # get things to do info 
-        country_activities = requests.get('https://travel-info-api.p.rapidapi.com/country-activities', params = {"country":f"{city_data['data']['country']}"},headers = { "X-RapidAPI-Key":"b2bd10d3d8msh9e611b03498c0d7p133fadjsn53cbcad402a5","X-RapidAPI-Host": "travel-info-api.p.rapidapi.com"})
-        all_activities = country_activities.json()
-        activities = all_activities['data']['activities']
+        if country_code != 'US': 
+            # get country info
+            country_info = requests.get('https://travel-info-api.p.rapidapi.com/country', params = {"country":f"{city_country}"},headers = { "X-RapidAPI-Key":"b2bd10d3d8msh9e611b03498c0d7p133fadjsn53cbcad402a5","X-RapidAPI-Host": "travel-info-api.p.rapidapi.com"})
+            all_details = country_info.json()
+            country_description= all_details['data']['info']
+
+            # get things to do info 
+            country_activities = requests.get('https://travel-info-api.p.rapidapi.com/country-activities', params = {"country":f"{city_country}"},headers = { "X-RapidAPI-Key":"b2bd10d3d8msh9e611b03498c0d7p133fadjsn53cbcad402a5","X-RapidAPI-Host": "travel-info-api.p.rapidapi.com"})
+            all_activities = country_activities.json()
+            activities = all_activities['data']['activities']
+        else: 
+            activities = [{'title': 'Coming Soon!', 'activity': ''}]
+            country_description = 'Coming Soon!'
 
     
         # Get timezone and weather data using lat/lon information from teleport api 
-        city_lat = city_data['data']['latitude']
-        city_lon = city_data['data']['longitude']
+        city_lat = city_data[0]['latitude']
+        city_lon = city_data[0]['longitude']
         tz_weather_data = requests.get(f'https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/{city_lat},{city_lon}?key=9Z9PX7J5C7ZRC76D38PL4WFL8')
         data = tz_weather_data.json()
         timezone = data['timezone']
@@ -239,8 +240,9 @@ def show_city(id):
         time_dif = int(user_tz) - int(tzoffset)
 
         #Get Country data using the country the city is in from teleport api 
-        country = city_data['data']['country']
-        country_link = requests.get(f'https://countryinfoapi.com/api/countries/name/{country}')
+        country = city_data[0]['country']
+        country_link = requests.get(f'https://countryinfoapi.com/api/countries/name/{city_country}')
+
         country_data = country_link.json()
         currencies = country_data['currencies']
         currency = str(currencies.keys()).replace("dict_keys(['","").replace("'])","")
@@ -248,8 +250,7 @@ def show_city(id):
         curr = final_currency
         languages = country_data['languages'].values()
         driving = country_data['car']['side'].capitalize()
-        return render_template('city.html', c_temp=c_temp,  population=population, user=user, currency=curr, driving=driving, languages=languages,time_dif=time_dif, timezone=timezone, country_description=country_description, city_country=city_country,  city_name=city_name, temp=temp, image=image, description=description, activities=activities)
-        return city_data
+        return render_template('city.html', c_temp=c_temp, user=user, currency=curr, driving=driving, languages=languages,time_dif=time_dif, timezone=timezone, city_country=city_country,  city_name=city_name, temp=temp, image=image, description=description, activities=activities, country_description=country_description, population=population)
     except KeyError:
         flash("We're still working on collecting data for this location!")
         return redirect('/')
@@ -258,31 +259,33 @@ def show_city(id):
         return redirect('/')
 
 
-@app.route('/save/<city_short_name>', methods=["GET", "POST"])
-def save_city(city_short_name):
+@app.route('/save/<city_name>', methods=["GET", "POST"])
+def save_city(city_name):
     """Save a city to user's page while avoiding duplication"""
     user = User.query.filter_by(username = session['username']).first()
     user_cities = User_city.query.filter_by(user_id = user.id).all()
     # get city data from teleport api using the city's short name 
-    res = requests.get('https://api.teleport.org/api/cities/', params={'search': city_short_name, 'limit':1})
+    res = requests.get('https://api.api-ninjas.com/v1/city?name=', 
+    params={'name': city_name}, 
+    headers={
+        "X-Api-Key":"bq8QLL6Jp79EIBsYjBWTlA==K8KjTdI3vm5VyHRH"})
     city_data = res.json()
-    city_scores_link =  requests.get(
-        city_data['_embedded']['city:search-results'][0]['_links']['city:item']['href'])
-    city_information_url = city_scores_link.json()
-    # get city data from urban area link
-    city_urban_area_url = requests.get(city_information_url['_links']['city:urban_area']['href'])
-    city = city_urban_area_url.json()
-    # get city url and image 
-    city_images = requests.get(city['_links']['ua:images']['href'])
-    city_img = city_images.json()
-    city_image = city_img['photos'][0]['image']['web']
+    city_info = city_data[0]
+    city_name = city_info['name']
+    country_code = city_info["country"]
+    city_country = find_key_by_value(country_codes, country_code)
+
+    # get  images 
+    country_basics = requests.get(f'https://pixabay.com/api/?key=41953233-44daacb0d74b24b2c21cce044&q={city_country}+{city_name}&image_type=photo')
+    photos = country_basics.json()
+    image= photos['hits'][0]['largeImageURL']
     # handle duplication 
     for c in user_cities:
-        if c.city_name == city_short_name:
+        if c.city_name == city_name:
             flash("You've already saved this city!")
             return redirect(f'/user/{user.username}')
     # add city to user_cities 
-    add_city = User_city(city_name=city_short_name, city_image=city_image, user_id =user.id)
+    add_city = User_city(city_name=city_name, city_image=image, user_id =user.id)
     db.session.add(add_city)
     db.session.commit()
     return redirect(f'/user/{user.username}')

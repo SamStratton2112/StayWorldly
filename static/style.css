@@ -36,3 +36,9 @@ body {
     height: 70px;
     width: 70px;
 }
+
+.city-page-name {
+    color:white;
+    font-weight:bolder;
+    font-size: 500%;
+}

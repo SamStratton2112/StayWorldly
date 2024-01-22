@@ -7,7 +7,7 @@
         <div class="card col p-0 text-center">
             <img class="card-img img-fluid" src="{{image}}">
             <div class="card-img-overlay text center">
-                <span class="card-title fw-bolder h1 ol">{{city_name}}, {{city_country}}</span>
+                <span class="city-page-name bottom-0">{{city_name}}, {{city_country}}</span>
             </div>
         </div>
     </div>
@@ -17,21 +17,8 @@
         </form>
     </div>
     <div class="row justify-content-center">
-        <div class="btn col-3 col-xl-4 m-3 pt-2 p-0 text-center">
-            <p class="card-text fw-bolder text-white h1">Timezone</p>
-            <ul class="m-3 list-unstyled text-white h3 text-start">
-                <li class="m-2">Timezone: {{timezone}}</li>
-                {% if time_dif < 0 %}
-                <li class="m-2">{{city_name}} is {{time_dif * -1}} hours ahead of your employer timezone.</li>
-                {% elif time_dif == 0 %}
-                <li class="m-2">This city is in the same timezone as your employer.</li>
-                {% else %}
-                <li class="m-2">{{city_name}} is {{time_dif}} hours behind your employer timezone.</li>
-                {% endif %}
-            </ul>
-        </div>
-        <div class="btn col-3 col-xl-4 m-3 pt-2 p-0">
-            <span class="card-text text-white fw-bolder h1">Lifestyle</span>
+        <div class="btn col-10 m-3 pt-2 p-0 text-center ps-3">
+            <span class="card-text text-white fw-bolder h1">The Essentials</span>
             <ul class="m-3 list-unstyled text-white h3 text-start">
                 <li class="m-2"> Predominant Language(s):</li>
                 <ul class="list-unstyled text-white h4 ">
@@ -40,9 +27,21 @@
                     {% endfor %}
                 </ul> 
                 <li class="m-2">Currency: {{currency}}</li>
-                <li class="m-2">Population: {{population}}</li>       
                 <li class="m-2">Driving side: {{driving}}</li>
-
+                <li class="m-2">Population: {{population}}</li>
+            </ul>
+        </div>
+        <div class="btn col-10 m-3 pt-2 p-0 text-center ps-3">
+            <p class="card-text fw-bolder text-white h1">Timezone</p>
+            <ul class="m-3 list-unstyled text-white h3 text-start">
+                <li>Timezone: {{timezone}}</li>
+                {% if time_dif < 0 %}
+                <li>{{city_name}} is {{time_dif * -1}} hours ahead of your employer timezone.</li>
+                {% elif time_dif == 0 %}
+                <li>This city is in the same timezone as your employer.</li>
+                {% else %}
+                <li>{{city_name}} is {{time_dif}} hours behind your employer timezone.</li>
+                {% endif %}
             </ul>
         </div>
         <div class="btn col-10 m-3 pt-2 p-0 text-center ps-3">
@@ -55,18 +54,18 @@
         </div>
         <div class="justify-content-center row m-5">
             <div class="btn col-10 p-0 text-center">
-                <span class="fw-bolder h1 text-white">A little about {{city_country}}...</span>
-                    <p class="card-text fw-bolder border-white text-white h3">{{country_description}}</p>
+                <span class="fw-bolder h1 text-white m-3">A little about {{city_country}}...</span>
+                    <p class="card-text fw-bolder border-white text-white h3 test-start">{{country_description}}</p>
             </div>
         </div>
         <div class="justify-content-center row m-5">
             <div class="btn col-10 p-0 text-center">
-                <p class="card-text fw-bolder text-white h1">Things to see and do!</p>
+                <p class="card-text fw-bolder text-white h1">Things to see and do in {{city_country}}</p>
                 <ul class="m-3 list-unstyled text-white h3 text-start text-center">
                     {% for activity in activities %}
                     <li>
-                        <span class="h2 fw-bolder">{{activity['title']}}</span>
-                        <p>{{activity['activity']}}</p>
+                        <span class="h2 fw-bolder m-2">{{activity['title']}}</span>
+                        <p class="m-2">{{activity['activity']}}</p>
                     </li>
                     {% endfor %}
                 </ul>
