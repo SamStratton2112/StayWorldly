@@ -241,10 +241,13 @@ def show_city(city_name):
         user_tz_str = user.employer_timezone.replace(':', '').replace('00', '').replace(',', '')
         # pull numbers out of string 
         user_tz = user_tz_str[0:3] if user_tz_str[0] == '-' else user_tz_str[1:3]
+        print('User_tz', user_tz)
+
         # calculate time difference 
         if len(user_tz)==3:
             # handle negative tz
-            time_dif = (-1 * int(user_tz[1:])) - int(tzoffset)
+            num = user_tz[1:]
+            time_dif = (-1 * int(num)) - int(tzoffset)
         time_dif = int(user_tz) - int(tzoffset)
 
         #Get Country data using the country the city is in from teleport api 
