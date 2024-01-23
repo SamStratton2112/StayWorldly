@@ -206,7 +206,10 @@ def show_city(city_name):
         places = places_res.json()
         all_places = places['features']
         total_places = len(all_places)
-        s_places = random.sample(all_places,10)
+        if total_places > 10:
+            s_places = random.sample(all_places, 10)
+        else:
+            s_places = all_places
         show_places = [p for p in s_places if p['properties']['name'] != '']
 
         # get country details, no details for US
