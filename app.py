@@ -243,7 +243,7 @@ def show_city(city_name):
         # prep string to become int
         user_tz_str = user.employer_timezone.replace(':', '').replace('00', '').replace(',', '')
         # pull numbers out of string 
-        user_tz = user_tz_str[1:4] if user_tz_str[1] == '-' else user_tz_str[2:4]
+        user_tz = user_tz_str[1:5] if user_tz_str[1] == '-' else user_tz_str[2:5]
         print('User_tz', user_tz)
 
         # calculate time difference 
