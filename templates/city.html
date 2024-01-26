@@ -31,11 +31,11 @@
                 <li class="mt-2">Population: {{population}}</li>
                 <li class="mt-2">Timezone: {{timezone}}</li>
                 {% if time_dif < 0 %}
-                <li class="mt-2">{{city_name}} is {{time_dif * -1}} hours ahead of your employer timezone.</li>
+                <li class="mt-2">{{city_name}} is {{time_dif * -1}} hour(s) ahead of your employer timezone.</li>
                 {% elif time_dif == 0 %}
                 <li class="mt-2">This city is in the same timezone as your employer.</li>
                 {% else %}
-                <li class="m-2">{{city_name}} is {{time_dif}} hours behind your employer timezone.</li>
+                <li class="m-2">{{city_name}} is {{time_dif}} hour(s) behind your employer timezone.</li>
                 {% endif %}
             </ul>
         </div>

@@ -37,22 +37,16 @@
     <div class="row justify-content-center">
         {% if 'username' not in session %}
             {% for city in all_user_cities %}
-            <div class="card col-9 col-lg-4 col-xl-3 p-0 bg-black m-3 mb-4 text-center">
-                    <img class="card-img img-fluid image-card" src="{{city.city_image}}">
-                    <div class="card-img-overlay">
-                        <span class="card-title text-white city-page-name">{{city}}</span>
-                    </div>
+            <div class="btn col-9 col-lg-4 col-xl-3 p-0 bg-transparent m-3 mb-4 text-center">
+                <span class="card-title text-white city-page-name">{{city}}</span>
             </div>
             {% endfor %}
         {% else %}
             {% for city in all_user_cities %}
             <!-- generate city card -->
-            <div class="card col-9 col-lg-4 col-xl-3 p-0 bg-black m-3 mb-4  text-center">
+            <div class="btn col-9 col-lg-4 col-xl-3 bg-transparent p-0 m-3 mb-4  text-center">
                     <a href="/city/{{city}}" class="loadbtn">
-                        <img class="card-img img-fluid image-card" src="{{city.city_image}}">
-                        <div class="card-img-overlay">
-                            <span class="card-title text-white city-page-name ">{{city}}</span>
-                        </div>
+                    <span class="card-title text-white city-page-name ">{{city}}</span>
                     </a>
             </div>
             {% endfor %}

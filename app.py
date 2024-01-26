@@ -11,13 +11,13 @@ from helpers import country_codes, find_key_by_value
 app = Flask(__name__)
 
 # # database for localhost
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///travel'
-# app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///travel'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config["SQLALCHEMY_ECHO"] = True
 # SECRET_KEY for localhost
-app.config['SECRET_KEY'] = 'secret'
-# app.config['SECRET_KEY'] = os.environ['SECRET_KEY']
+# app.config['SECRET_KEY'] = 'secret'
+app.config['SECRET_KEY'] = os.environ['SECRET_KEY']
 
 # THIS HAS CHANGED MY JSON RESPONSE 
 # FIX IT 
@@ -243,17 +243,19 @@ def show_city(city_name):
         # prep string to become int
         user_tz_str = user.employer_timezone.replace(':', '').replace('00', '').replace(',', '')
         # pull numbers out of string 
-        user_tz = user_tz_str[2:5] if user_tz_str[2] == '-' else user_tz_str[2:4]
+        user_tz = user_tz_str[0:3] if user_tz_str[0] == '-' else user_tz_str[0:2]
         print('User_tz_srt', user_tz_str)
         print('User_tz', user_tz)
+        print('User_tz_str[0]', user_tz_str[0])
         print('OFFSET', tzoffset)
 
         # calculate time difference 
         if len(user_tz)==3:
             # handle negative tz
             num = user_tz[1:]
-            time_dif = (-1 * int(num)) - int(tzoffset)
+            time_dif = (int(num)) - int(tzoffset)
         time_dif = int(user_tz) - int(tzoffset)
+        print('time dif', time_dif)
 
         #Get Country data using the country the city is in from teleport api 
         country = city_data[0]['country']
