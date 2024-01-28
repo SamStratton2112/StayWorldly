@@ -48,7 +48,7 @@ def homepage():
             user_cities.insert(0, city)
     # get random set of 9 cities
     all_user_cities = random.sample(user_cities,9)
-    # IF DATABASE IS EMPTY COMMENT OUT LINE 50 AND COMMENT IN LINE 52 UNTIL 9 CITIES HAVE BEEN SAVED 
+    # IF DATABASE IS EMPTY COMMENT OUT LINE 50 AND COMMENT IN LINE 52 UNTIL 9 CITIES HAVE BEEN SAVED SO SAMPLE WORKS
     # all_user_cities = user_cities
     form = SearchForm()
     if form.validate_on_submit():
