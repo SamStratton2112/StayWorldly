@@ -10,6 +10,8 @@ from helpers import country_codes, find_key_by_value
 
 app = Flask(__name__)
 
+# Needs too be broken up into a few files
+
 # # database for localhost
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///travel'
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
@@ -19,8 +21,7 @@ app.config["SQLALCHEMY_ECHO"] = True
 # app.config['SECRET_KEY'] = 'secret'
 app.config['SECRET_KEY'] = os.environ['SECRET_KEY']
 
-# THIS HAS CHANGED MY JSON RESPONSE 
-# FIX IT 
+
 with app.app_context():
     connect_db(app)
 
