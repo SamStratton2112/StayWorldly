@@ -8,6 +8,8 @@ from sqlalchemy.exc import IntegrityError
 import os 
 from helpers import country_codes, find_key_by_value
 
+# add to imports : pytz, pycountry
+
 app = Flask(__name__)
 
 # Needs too be broken up into a few files
@@ -35,35 +37,38 @@ def homepage():
         - Navbar shows option to see user page/information
         - list of cities 
         - form to search for cities"""
-    # initial cities list with duplication 
-    all_cities = User_city.query.all()
-    # initialize list used to render cities without duplication
-    all_user_cities = []
-    # add city object if city is not in all_user_cities
-    user_cities = []
-    # initialize list of cities to return
-    city_results = []
-    for city in all_cities:
-        if city.city_name not in all_user_cities:
-            all_user_cities.append(city.city_name)
-            user_cities.insert(0, city)
-    # get random set of 9 cities
-    all_user_cities = random.sample(user_cities,9)
-    # IF DATABASE IS EMPTY COMMENT OUT LINE 50 AND COMMENT IN LINE 52 UNTIL 9 CITIES HAVE BEEN SAVED SO SAMPLE WORKS
-    # all_user_cities = user_cities
+    all_cities = set(User_city.query.all()) 
+    all_user_cities = all_cities if len(all_cities) <= 9 else random.sample(all_cities, 9)
+    # ## unnecessary logic to filter out duplicates when I could have used a set 
+    # all_cities = User_city.query.all()
+    # # initialize list used to render cities without duplication
+    # all_user_cities = [] # 
+    # # add city object if city is not in all_user_cities
+    # user_cities = []
+    # # initialize list of cities to return
+    # city_results = []
+    # 
+    # for city in all_cities:
+    #     if city.city_name not in all_user_cities:
+    #         all_user_cities.append(city.city_name)
+    #         user_cities.insert(0, city)
+    # # get random set of 9 cities
+    # all_user_cities = random.sample(user_cities,9)
+    # # IF DATABASE IS EMPTY COMMENT OUT LINE ABOVE AND IN LINE BELOW UNTIL 9 CITIES HAVE BEEN SAVED SO SAMPLE WORKS
+    # # all_user_cities = user_cities
     form = SearchForm()
     if form.validate_on_submit():
         # Ensure capitalized for API request
         cityInput = request.form['city'].capitalize()
-        # Get matching city 
+        # # we can move this into a function
+        # def search_city_results(city) => return set of cities   
         res = requests.get('https://api.api-ninjas.com/v1/city?name=', 
         params={'name': cityInput}, 
         headers={
             "X-Api-Key":"bq8QLL6Jp79EIBsYjBWTlA==K8KjTdI3vm5VyHRH"})
         city_data = res.json()
         for city in city_data:
-            city_results.append(
-                { "name":city['name']})
+            city_results.append({ "name":city['name']})
         return render_template('home.html', form=form, cities=city_results, all_user_cities=all_user_cities)
     return render_template('home.html', form=form, all_user_cities=all_user_cities)
 

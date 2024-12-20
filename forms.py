@@ -13,6 +13,7 @@ class LoginForm(FlaskForm):
     submit = SubmitField('Submit')
 
 
+# remove excessive list of tuples and iterate over pytz.all_timezones 
 class EditUserForm(FlaskForm):
     """Edit user details form"""
     employer_timezone = SelectField('Employer Timezone', validators=[DataRequired()], choices=[('', 'Select Timezone'),
@@ -149,7 +150,7 @@ class EditUserForm(FlaskForm):
     password = PasswordField('Password', validators=[Length(min=6)])
     submit = SubmitField('Submit')
     
-
+# remove excessive list of tuples and iterate over pytz.all_timezones 
 class RegisterUserForm(FlaskForm):
     """Register a new user"""
     first_name = StringField('First Name', validators=[DataRequired()])

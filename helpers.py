@@ -1,3 +1,5 @@
+# Can be deleted after refactor 
+# use pycountry.countries 
 country_codes= {'Afghanistan': 'AF',
  'Albania': 'AL',
  'Algeria': 'DZ',
@@ -177,7 +179,6 @@ country_codes= {'Afghanistan': 'AF',
  'Portugal': 'PT',
  'Puerto Rico': 'PR',
  'Qatar': 'QA',
-#  stopped here 
  'Romania': 'RO',
  'Russia': 'RU',
  'Rwanda': 'RW',
@@ -249,6 +250,7 @@ country_codes= {'Afghanistan': 'AF',
  'Zimbabwe': 'ZW',
  'Åland Islands': 'AX'}
 
+# this seems extremely unnecessary to keep in an external file
 def find_key_by_value(dictionary, value):
     for key, val in dictionary.items():
         if val == value:
