@@ -9,14 +9,14 @@
     {% else %}
     <!-- show search for a city form -->
     <form method="POST">
-        <span class="h2 ol">Find your next adventure: </span>
+        <span class="h2 ol">Find your next adventure beyond the borders of the USA! </span></br></br>
         {{ form.hidden_tag() }}
 
         {% for field in form if field.widget.input_type != 'hidden' %}
         {% for error in field.errors %}
           <span>{{ error }}</span>
         {% endfor %}
-        {{field(placeholder='Search for any city!', class='btn border-white text-white')}}
+        {{field(placeholder='Search for any city', class='btn border-white text-white')}}
         {% endfor %}
         <button class="btn border-white text-white">Submit</button>
 
@@ -25,7 +25,7 @@
         <!-- list to show search results  -->
         <ul class="list-unstyled">
             {% for city in cities %}
-            <li><a class="text-white h4 fw-bolder loadbtn" href="/city/{{city['name']}}">{{city['name']}} {{city['country']}}</a></li>
+            <li>- <a class="text-white h4 fw-bolder loadbtn" href="/city/{{city['name']}}">{{city['name']}} {{city['country']}}</a></li>
             {% endfor %}
         </ul>
     </div>
