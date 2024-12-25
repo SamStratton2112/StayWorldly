@@ -12,7 +12,6 @@ class LoginForm(FlaskForm):
     password = PasswordField('Password', validators=[Length(min=6, max=50)])
     submit = SubmitField('Submit')
 
-
 # remove excessive list of tuples and iterate over pytz.all_timezones 
 class EditUserForm(FlaskForm):
     """Edit user details form"""

@@ -1,5 +1,4 @@
-# Can be deleted after refactor 
-# We can use pytz.all_timezones to generate a list of all timezones 
+# Can use pytz for future projects 
 choices=[
     ('', 'Select Timezone'),
     ('-11:00 International Date Line West', 'International Date Line West'),

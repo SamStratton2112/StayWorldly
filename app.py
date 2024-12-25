@@ -8,11 +8,7 @@ from sqlalchemy.exc import IntegrityError
 import os 
 from helpers import country_codes, get_city_search_results, get_city_details, get_city_photo, get_country_details, get_weather_tz, get_country_basics
 
-# pytz, pycountry
-
 app = Flask(__name__)
-
-# Needs too be broken up into a few files
 
 # # database for localhost
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///travel'
@@ -37,8 +33,8 @@ def homepage():
         - Navbar shows option to see user page/information
         - list of cities 
         - form to search for cities"""
-    all_cities = set(User_city.query.all()) 
-    all_user_cities = all_cities if len(all_cities) <= 9 else random.sample(all_cities, 9)
+    all_cities = User_city.query.all() 
+    all_user_cities = set(all_cities) if len(all_cities) <= 9 else set(random.sample(all_cities, 9))
     form = SearchForm()
     if form.validate_on_submit():
         # Ensure capitalized for API request
@@ -58,8 +54,6 @@ def register_user():
     if form.validate_on_submit():
         try:
             # collect information from form and use User class method to validate inputs 
-            ## handel invalid timezones can mostlikely be ommited when pytz is incorperated 
-            # handle invalid timezone 
             if form.employer_timezone.data == '' :
                 flash("Invalid Timezone!")
                 return redirect('/register')
@@ -107,12 +101,14 @@ def logout():
     """handle user logout"""
     # clear the session to indicate log out
     session.pop('username')
-
     return redirect('/')
 
 @app.route('/user/<username>', methods=["GET", "POST"])
 def show_user(username):
-    """show user page"""
+    """show user page, breaking up saved cities into two sections
+        - cities to visit 
+        - cities that have already been visited  
+    """
     # handle no logged in user
     if 'username' not in session:
         flash("Access Denied")
@@ -166,21 +162,15 @@ def edit_user(user_id):
 @app.route('/city/<city_name>', methods=["GET", "POST"])
 def show_city(city_name):
     """Get all relevant information about a city"""
-
-    # Get City data from APIs
     try: 
         # Returns a dictionary containing population, longitude, latitude, and country
         city_info = get_city_details(city_name)
-
         # get city image 
         image = get_city_photo(city_info)
-
         # get country details, no details for USA
         country_description, activities = get_country_details(city_info)
-    
         # Get user timezone info/difference and weather data
         c_temp, temp, time_dif, user, timezone, description = get_weather_tz(city_info)
-
         # get country currency, languages, and driving side
         curr, languages, driving = get_country_basics(city_info)
 
@@ -199,21 +189,9 @@ def save_city(city_name):
     user = User.query.filter_by(username = session['username']).first()
     user_cities = User_city.query.filter_by(user_id = user.id).all()
     # get city data from teleport api using the city's short name 
-    res = requests.get('https://api.api-ninjas.com/v1/city?name=', 
-    params={'name': city_name}, 
-    headers={
-        "X-Api-Key":"bq8QLL6Jp79EIBsYjBWTlA==K8KjTdI3vm5VyHRH"})
-    city_data = res.json()
-    city_info = city_data[0]
-    city_name = city_info['name']
-    country_code = city_info["country"]
-    city_country = find_key_by_value(country_codes, country_code)
-
+    city_info = get_city_details(city_name)
     # get  images 
-    country_basics = requests.get(f'https://pixabay.com/api/?key=41953233-44daacb0d74b24b2c21cce044&q={city_country}+{city_name}&image_type=photo')
-    photos = country_basics.json()
-    image= photos['hits'][0]['webformatURL']
-    
+    image = get_city_photo(city_info)
     # handle duplication 
     for c in user_cities:
         if c.city_name == city_name:
@@ -253,4 +231,4 @@ def mark_city_as_not_visited(city_id):
     city.visited = 0
     db.session.add(city)
     db.session.commit()
-    return redirect(f'/user/{user}') 
+    return redirect(f'/user/{user}')
