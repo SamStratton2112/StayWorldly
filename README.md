@@ -2,7 +2,7 @@
 # Stay Worldly : https://stay-worldly.onrender.com/
 
 
-Stay Worldly allows a user to create an account, search for cities world wide, learn about selected cities, save cities to their user page, and mark saved cities as visited. I created this for remote workers to see places they may want to visit or move to.
+Stay Worldly allows a user to create an account, search for cities world wide, learn basic information about selected cities, the country the city is locates in, as well as country highlights. Users can also save cities to their user page, and mark saved cities as visited. I created this for remote workers to see places they may want to visit.
 
 
 ## Features:
@@ -27,11 +27,6 @@ Stay Worldly allows a user to create an account, search for cities world wide, l
 2. https://countryinfoapi.com/documentation
 3. https://www.visualcrossing.com/resources/documentation/weather-api/timeline-weather-api/
 4. https://pixabay.com/api/
-5. https://travel-info-api.p.rapidapi.com/
-
-
-### Localhost 
-- If running Stay Worldly locally and your travel database is empty an error will be triggered. To fix this error comment out line 49 and comment in line 51 until 9 atleast cities have been added to your database. 
 
 
 ### Tests:

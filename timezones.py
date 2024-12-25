@@ -1,3 +1,4 @@
+# Can use pytz for future projects 
 choices=[
     ('', 'Select Timezone'),
     ('-11:00 International Date Line West', 'International Date Line West'),
