@@ -33,8 +33,10 @@ def homepage():
         - Navbar shows option to see user page/information
         - list of cities 
         - form to search for cities"""
-    all_cities = User_city.query.all() 
-    all_user_cities = set(all_cities) if len(all_cities) <= 9 else set(random.sample(all_cities, 9))
+    cities_res = User_city.query.all()
+    seen = set()
+    all_cities = [city.city_name for city in cities_res if city.city_name not in seen and not seen.add(city.city_name)]
+    all_user_cities = all_cities if len(all_cities) < 9 else random.sample(all_cities, 9)
     form = SearchForm()
     if form.validate_on_submit():
         # Ensure capitalized for API request
@@ -84,7 +86,7 @@ def register_user():
 def do_login():
     """ handle user log in"""
     form=LoginForm()
-    if form.validate_on_submit(): 
+    else form.validate_on_submit(): 
         user = User.authenticate(form.username.data, form.password.data)
         if user:
             # User.authenticate() will return the username of the authenticated user
