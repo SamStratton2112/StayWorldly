@@ -86,7 +86,7 @@ def register_user():
 def do_login():
     """ handle user log in"""
     form=LoginForm()
-    else form.validate_on_submit(): 
+    if form.validate_on_submit(): 
         user = User.authenticate(form.username.data, form.password.data)
         if user:
             # User.authenticate() will return the username of the authenticated user
